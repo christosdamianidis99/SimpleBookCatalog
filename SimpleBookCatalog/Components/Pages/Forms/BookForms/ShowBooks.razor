@@ -1,0 +1,125 @@
+﻿@page "/show-books"
+@inject IBookRepository BookRepository
+
+@using SimpleBookCatalog.Components.ReusableComponents
+
+
+<div class="books-page container">
+    <h3 class="books-title">Books</h3>
+    <!-- Sort Search AddNew-->
+    <ReusableSortAddSearch TSortItem="SortTypeBooks"
+                           @bind-SortChoice="SortChoice"
+                           @bind-SortChoice:after="OnSortChanged"
+                           searchQuery="@searchQuery"
+                           OnSearch="SearchBooks"
+                           SearchPlaceHolder="title"
+                           AddNewLink="@($"/add-new-book")"
+                           AddNewString="book">
+    </ReusableSortAddSearch>
+
+    <!-- Books List -->
+    <ReusableLoopForShow TItem="Book" TCard="BookCard"
+                         Items="books"
+                         FilteredItems="filteredBooks"
+                         SortItems="items => SortBooksEnumerable(items)"
+                         SortFilteredItems="items => SortFilteredBooksEnumerable(items)" />
+
+
+
+
+</div>
+
+@code {
+
+    [Parameter] public SortTypeBooks? SortChoice { get; set; }
+    private List<Book> books = new List<Book>();
+    private string? searchQuery { get; set; }
+    private IEnumerable<Book>? filteredBooks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadBooksAsync();
+    }
+
+    private async Task LoadBooksAsync()
+    {
+        books = await BookRepository.GetAllAsync();
+    }
+
+    private IEnumerable<Book> SortBooksEnumerable(IEnumerable<Book> books)
+    {
+
+        if (books == null) return Enumerable.Empty<Book>();
+
+        return SortChoice switch
+        {
+            SortTypeBooks.NameAsc => books.OrderBy(b => b.Title),
+            SortTypeBooks.NameDesc => books.OrderByDescending(b => b.Title),
+            SortTypeBooks.PageAsc => books.OrderBy(b => b.NumberOfPages),
+            SortTypeBooks.PagesDesc => books.OrderByDescending(b => b.NumberOfPages),
+            SortTypeBooks.BooksSold => books.OrderBy(b => b.NumberOfBooksSold),
+            SortTypeBooks.PublishDate => books.OrderBy(b => b.PublicationDate),
+            _ => books,
+        };
+    }
+
+    private IEnumerable<Book> SortFilteredBooksEnumerable(IEnumerable<Book> filteredBooks)
+    {
+        if (filteredBooks == null) return Enumerable.Empty<Book>();
+
+        return SortChoice switch
+        {
+            SortTypeBooks.NameAsc => filteredBooks.OrderBy(b => b.Title),
+            SortTypeBooks.NameDesc => filteredBooks.OrderByDescending(b => b.Title),
+            SortTypeBooks.PageAsc => filteredBooks.OrderBy(b => b.NumberOfPages),
+            SortTypeBooks.PagesDesc => filteredBooks.OrderByDescending(b => b.NumberOfPages),
+            SortTypeBooks.BooksSold => filteredBooks.OrderBy(b => b.NumberOfBooksSold),
+            SortTypeBooks.PublishDate => filteredBooks.OrderBy(b => b.PublicationDate),
+            _ => filteredBooks,
+        };
+    }
+
+
+    private async Task OnSortChanged()
+    {
+        await Task.Delay(200);
+    }
+
+
+    private void SearchBooks(ChangeEventArgs e)
+    {
+        searchQuery = e.Value?.ToString() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(searchQuery))
+        {
+            filteredBooks = books; // Show all books if search query is empty
+        }
+        else
+        {
+            filteredBooks = books.Where(b => CommonMechanics.SearchGeneric(b, searchQuery));
+        }
+    }
+
+
+
+
+    //private int sortChoice = 0;
+    @*
+       private async Task OnSortChanged(ChangeEventArgs e)
+    {
+        sortChoice = int.Parse(e.Value.ToString() ?? "0");
+        await Task.CompletedTask;
+    }
+
+    private IEnumerable<(int Value, string Text)> GetSortOptions()
+    {
+        return Enum.GetValues(typeof(SortTypeBooks)).Cast<SortTypeBooks>()
+            .Select(sort => ((int)sort, sort.ToString()));
+    }
+
+        private bool searchBook(Book? book, string search)
+    {
+        //return searchGeneric(book, search);
+        return book?.Title?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false;
+    }
+    *@
+}

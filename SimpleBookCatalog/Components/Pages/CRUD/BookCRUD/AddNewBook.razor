@@ -1,0 +1,21 @@
+﻿@page "/add-new-book"
+@inject IBookRepository Repository
+@using SimpleBookCatalog.Components.Pages.Forms.BookForms
+@inject NavigationManager Navigation
+
+<PageTitle>
+    Add New Book
+</PageTitle>
+<div class="row justify-content-center">
+    <div class="col-6">
+       <BookForm IsEditMode="false" OnValidBookSubmit="AddBook"/>
+    </div>
+</div>
+@code {
+
+    private async Task AddBook(Book book)
+    {
+        await Repository.AddAsync(book);
+        Navigation.NavigateTo("/show-books");
+    }
+}

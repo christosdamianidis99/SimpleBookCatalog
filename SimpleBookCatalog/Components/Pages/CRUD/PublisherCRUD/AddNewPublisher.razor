@@ -1,0 +1,21 @@
+﻿@page "/add-new-publisher"
+@inject IPublisherRepository Repository
+@using SimpleBookCatalog.Components.Pages.Forms.PublisherForms
+@inject NavigationManager Navigation
+<PageTitle>
+    Add new Publisher
+</PageTitle>
+
+<div class="row justify-content-center">
+    <div class="col-6">
+        <PublisherForm IsEditMode="false" OnValidAuthorSubmit="AddPublisher"/>
+    </div>
+
+</div>
+@code {
+    private async Task AddPublisher(Publisher publisher)
+    {
+        await Repository.AddAsync(publisher);
+        Navigation.NavigateTo("/show-publishers");
+    }
+}

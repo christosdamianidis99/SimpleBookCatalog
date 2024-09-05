@@ -1,0 +1,103 @@
+﻿@inject IBookRepository BookRepository
+@inject IAuthorRepository AuthorRepository
+@inject IPublisherRepository PublisherRepository
+@inject IGenreRepository GenreRepository
+@inject NavigationManager Navigation
+
+@using SimpleBookCatalog.Components.ReusableComponents
+
+@if (Book is not null)
+{
+    <EditForm Enhance="true" FormName="AddOrEditBookForm" Model="Book">
+ <EditFormGeneric  TModel="Book" Model="Book" Authors="FilteredAuthors" Publishers="Publishers" Genres="Genres" OnValidSubmit="HandleBookSubmit" EditMode="IsEditMode"/>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    </EditForm>
+}
+@code {
+    [Parameter]
+    public bool IsEditMode { get; set; } = false;
+
+    [Parameter]
+    public int BookId { get; set; }
+
+    [Parameter]
+    public EventCallback<Book> OnValidBookSubmit { get; set; }
+
+    [SupplyParameterFromForm]
+    public Book? Book { get; set; }
+
+    private List<Publisher> Publishers { get; set; } = new();
+    private List<Genre> Genres { get; set; } = new();
+
+    private List<Author> Authors { get; set; } = new();
+    private List<Author> FilteredAuthors { get; set; } = new();
+    private bool IsAuthorSelectDisabled { get; set; } = true;
+
+    private string Title => IsEditMode ? $"Edit {Book.Title}" : "Add New Book";
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Authors = await AuthorRepository.GetAllAsync();
+        Publishers = await PublisherRepository.GetAllAsync();
+        Genres = await GenreRepository.GetAllAsync();
+
+        FilteredAuthors = Authors; // Initially, all authors are available
+        if (IsEditMode)
+        {
+            Book ??= await BookRepository.GetByIdAsync(BookId);
+            IsAuthorSelectDisabled = Book?.PublicationDate == null;
+        }
+        else
+        {
+            Book ??= new();
+        }
+
+
+
+    }
+
+    private bool CheckIfAuthorSelectDisabled(Book book)
+    {
+        return IsAuthorSelectDisabled;
+    }
+
+    private void OnPublicationDateChanged()
+    {
+        if (DateTime.TryParse(Book.PublicationDate.ToString(), out var publicationDate))
+        {
+
+            var eighteenYearsBeforePublication = publicationDate.AddYears(-18);
+            FilteredAuthors = Authors.Where(a => a.DateOfBirth < eighteenYearsBeforePublication).ToList();
+            IsAuthorSelectDisabled = false;
+        }
+        else
+        {
+            FilteredAuthors = new List<Author>();
+            IsAuthorSelectDisabled = true;
+        }
+    }
+
+
+    private async Task HandleBookSubmit()
+    {
+        
+        if (IsEditMode)
+        {
+            await BookRepository.UpdateAsync(Book);
+            Navigation.NavigateTo("/show-books");
+
+        }
+        else
+        {
+            await BookRepository.AddAsync(Book);
+            Navigation.NavigateTo("/show-books");
+
+        }
+    }
+
+
+
+}

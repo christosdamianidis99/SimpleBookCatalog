@@ -1,0 +1,73 @@
+﻿<div class="publisher-card card shadow-sm mb-4">
+    <div class="card-body">
+        <!-- Publisher Name -->
+        <h5 class="publisher-name">@Publisher.Name</h5>
+
+        <!-- Publisher Details -->
+        <div class="publisher-details mb-3">
+            <p class="publisher-address">
+                <strong>Address:</strong> @(Publisher.Address ?? "N/A")
+            </p>
+            <p class="publisher-website">
+                <strong>Website:</strong>
+                @if (!string.IsNullOrEmpty(Publisher.Website))
+                {
+                    <a href="@Publisher.Website" target="_blank" class="text-decoration-none text-primary">
+                        @Publisher.Website
+                    </a>
+                }
+                else
+                {
+                    <span>N/A</span>
+                }
+            </p>
+        </div>
+
+        <!-- Books Section -->
+             @if (!isCollapsed)
+        {
+        <h6 class="books-title text-muted">Books Published</h6>
+        <ul class="books-list list-group">
+            @foreach (var book in Publisher?.Books ?? Enumerable.Empty<Book>())
+            {
+                <li class="book-item list-group-item">
+                    <strong>Title:</strong> @book.Title <br />
+                    <strong>Author:</strong> @(book.Author?.FirstName ?? "N/A") @(book.Author?.Surname ?? "N/A") <br />
+                    <strong>Publication Date:</strong> @book.PublicationDate?.ToString("MMM dd, yyyy") <br />
+                    <strong>Category:</strong> @book.Category.ToString()
+                </li>
+            }
+        </ul>
+
+        }
+        <!-- Button to toggle the collapse -->
+        <button class="btn btn-light btn-sm" type="button" @onclick="setCollapsedOrExpand">
+            @if (isCollapsed)
+            {
+                <h5>Show Books</h5>
+            }
+            else
+            {
+                <h5>Hide Books</h5>
+            }
+        </button>
+    </div>
+
+    <!-- Card Footer with Action Buttons -->
+    <div class="card-footer text-end">
+        <a href="@($"/edit-publisher/{Publisher.Id}")" class="btn btn-primary me-2">Edit</a>
+        <a href="@($"/confirm-delete-publisher/{Publisher.Id}")" class="btn btn-danger">Delete</a>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public required Publisher Publisher { get; set; }
+
+    private bool isCollapsed = true;
+
+    private void setCollapsedOrExpand()
+    {
+        isCollapsed = !isCollapsed;
+    }
+}

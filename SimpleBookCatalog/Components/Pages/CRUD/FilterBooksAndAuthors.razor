@@ -1,0 +1,384 @@
+﻿@page "/filter-books-authors"
+@inject IBookRepository BookRepository
+@inject IAuthorRepository AuthorRepository
+@inject IPublisherRepository PublisherRepository
+@inject IGenreRepository GenreRepository
+@using SimpleBookCatalog.Components.Pages.Forms.BookForms
+
+<h3>Filter</h3>
+
+<!-- Filter Form -->
+<div class="filter-form mb-4">
+    <!-- Books Filters Section -->
+    <div class="mb-4">
+        <h5>Books Filters</h5>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="inputStartValuePage" class="form-label">Pages greater than:</label>
+                <InputNumber id="inputStartValuePage" class="form-control" @bind-Value="pagesGreater"></InputNumber>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="inputEndValuePage" class="form-label">Pages less than:</label>
+                <InputNumber id="inputEndValuePage" class="form-control" @bind-Value="pagesLess"></InputNumber>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="inputStartValuePublishDate" class="form-label">Publish Date after:</label>
+                <InputDate id="inputStartValuePublishDate" class="form-control" @bind-Value="publishDateAfter"></InputDate>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="inputEndValuePublishDate" class="form-label">Publish Date before:</label>
+                <InputDate id="inputEndValuePublishDate" class="form-control" @bind-Value="publishDateBefore"></InputDate>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="category" class="form-label">Category</label>
+                <InputSelect id="category" @bind-Value="inputCategory" class="form-control">
+                    <option value="0">Select Category</option>
+                    @foreach (var category in Enum.GetValues(typeof(Category)))
+                    {
+                        <option value="@category">@category.ToString()</option>
+                    }
+                </InputSelect>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="BookColors" class="form-label">Book color</label>
+                <InputSelect id="BookColors" @bind-Value="inputBookColor" class="form-control">
+                    <option value="0">Select Book Color</option>
+                    @foreach (var bookColor in Enum.GetValues(typeof(BookColors)))
+                    {
+                        <option value="@bookColor">@bookColor.ToString()</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <!-- Authors Filters Section -->
+            @if (authors != null)
+            {
+
+                        <div class="col-md-6 mb-3">
+                            <label for="author" class="form-label">Authors</label>
+                            <InputSelect id="author" @bind-Value="inputAuthorId" class="form-control">
+                                <option value="">Select Author</option>
+                                @foreach (var author in authors)
+                                {
+                                    <option value="@author.Id">@author.FirstName @author.Surname</option>
+                                }
+                            </InputSelect>
+                        </div>
+            }
+            <!-- Publishers Filters Section -->
+            @if (publishers != null)
+            {
+
+                        <div class="col-md-6 mb-3">
+                            <label for="publisher" class="form-label">Publishers</label>
+                            <InputSelect id="publisher" @bind-Value="inputPublisherId" class="form-control">
+                                <option value="">Select Publisher</option>
+                                @foreach (var publisher in publishers)
+                                {
+                                    <option value="@publisher.Id">@publisher.Name</option>
+                                }
+                            </InputSelect>
+                        </div>
+
+            }
+            <!-- Genres Filters Section -->
+            @if (genres != null)
+            {
+
+                        <div class="col-md-6 mb-3">
+                            <label for="genre" class="form-label">Genres</label>
+                            <InputSelect id="genre" @bind-Value="inputGenreId" class="form-control">
+                                <option value="">Select Genre</option>
+                                @foreach (var genre in genres)
+                                {
+                                    <option value="@genre.Id">@genre.Name</option>
+                                }
+                            </InputSelect>
+                        </div>
+
+            }
+        </div>
+      
+    </div>
+
+   
+    <!-- Buttons Section -->
+    <div class="d-flex justify-content-center mb-2">
+        <button type="button" class="btn btn-success me-2" @onclick="FilterBooks">Filter</button>
+        <button type="button" class="btn btn-secondary" @onclick="ClearFilters">Clear Filters</button>
+    </div>
+
+    <!-- Filter Results Section -->
+    @if (isFilterPressed)
+    {
+        @if (filteredBooks is null)
+        {
+            <div class="alert alert-info">Loading books, please wait...</div>
+        }
+        else if (filteredBooks.Any())
+        {
+            <div class="row">
+                @foreach (var book in filteredBooks)
+                {
+                    <div class="col-md-4 mb-4">
+                        <BookCard Book="book" />
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning">No books found.</div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-warning">Select filters and press submit to see books.</div>
+    }
+</div>
+
+
+@code {
+
+    private int? pagesGreater;
+    private int? pagesLess;
+
+    private DateTime? publishDateAfter = null;
+    private DateTime? publishDateBefore = null;
+
+    private DateTime? authorDateOfBirthAfter = null;
+    private DateTime? authorDateOfBirthBefore = null;
+
+    private bool isFilterPressed = false;
+
+    private List<Book> books = new List<Book>();
+    private List<Book> filteredBooks = new List<Book>();
+
+    private List<Author>? authors = new List<Author>();
+
+    private List<Publisher>? publishers = new List<Publisher>();
+
+    private List<Genre>? genres = new List<Genre>();
+
+    private Category? inputCategory;
+    private BookColors inputBookColor;
+
+    private int? inputAuthorId;
+    private int? inputPublisherId;
+    private int? inputGenreId;
+
+    private async Task LoadBooksAsync()
+    {
+        books = await BookRepository.GetAllAsync();
+        await Task.CompletedTask;
+    }
+
+    private async Task LoadAuthorsAsync()
+    {
+        authors = await AuthorRepository.GetAllAsync();
+        await Task.CompletedTask;
+    }
+
+    private async Task LoadPublishersAsync()
+    {
+        publishers = await PublisherRepository.GetAllAsync();
+        await Task.CompletedTask;
+    }
+
+    private async Task LoadGenresAsync()
+    {
+        genres = await GenreRepository.GetAllAsync();
+        await Task.CompletedTask;
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAuthorsAsync();
+        await LoadPublishersAsync();
+        await LoadGenresAsync();
+        await LoadBooksAsync();
+    }
+
+    private async Task FilterBooks()
+    {
+        if (filteredBooks != null)
+        {
+
+            filteredBooks.Clear();
+        }
+
+        filteredBooks = await BookRepository.GetAllAsync();
+        await filterPages();
+        await filterPublishDate();
+        await filterCategory();
+        await filterBookColor();
+        await filterAuthors();
+        await filterPublishers();
+        await filterGenres();
+
+        isFilterPressed = true;
+
+        await Task.CompletedTask;
+    }
+
+    private async Task filterPages()
+    {
+        if (filteredBooks != null)
+        {
+            if (pagesLess > 0 && pagesGreater > 0)
+            {
+                filteredBooks = filteredBooks
+                        .Where(itm => itm.NumberOfPages >= (pagesGreater ?? 0))
+                        .Where(itm => itm.NumberOfPages <= (pagesLess ?? int.MaxValue))
+                        .ToList();
+            }
+            else if (pagesLess > 0 && pagesGreater <= 0)
+            {
+                filteredBooks = filteredBooks.Where(itm => itm.NumberOfPages <= (pagesLess ?? int.MaxValue)).ToList();
+
+            }
+            else if (pagesGreater > 0 && pagesLess <= 0)
+            {
+                filteredBooks = filteredBooks.Where(itm => itm.NumberOfPages >= (pagesGreater ?? 0)).ToList();
+
+            }
+
+
+        }
+
+        await Task.CompletedTask;
+    }
+
+
+    private async Task filterPublishDate()
+    {
+
+        if (filteredBooks != null)
+        {
+            if (publishDateAfter != null)
+            {
+                filteredBooks = filteredBooks.Where(itm => itm.PublicationDate.GetValueOrDefault() > publishDateAfter).
+                ToList();
+            }
+            else if (publishDateBefore != null)
+            {
+                filteredBooks = filteredBooks.Where(itm => itm.PublicationDate.GetValueOrDefault() < publishDateBefore).
+            ToList();
+            }
+
+
+        }
+
+        await Task.CompletedTask;
+    }
+
+    private async Task filterCategory()
+    {
+        if (filteredBooks != null)
+        {
+            if (inputCategory > 0)
+            {
+                filteredBooks = filteredBooks.Where(itm => itm.Category == inputCategory).ToList();
+
+            }
+
+        }
+
+        await Task.CompletedTask;
+
+    }
+
+    private async Task filterBookColor()
+    {
+
+        if (filteredBooks != null)
+        {
+            if (inputBookColor > 0)
+            {
+                filteredBooks = filteredBooks.Where(itm => itm.BookColors == inputBookColor).ToList();
+
+            }
+
+
+        }
+
+        await Task.CompletedTask;
+
+    }
+
+    private async Task filterAuthors()
+    {
+        if (filteredBooks != null && inputAuthorId.HasValue && authors != null)
+        {
+            var selectedAuthor = authors.FirstOrDefault(a => a.Id == inputAuthorId.Value);
+            if (selectedAuthor != null)
+            {
+                filteredBooks = filteredBooks.Where(itm => itm.AuthorId == selectedAuthor.Id).ToList();
+            }
+        }
+
+        await Task.CompletedTask;
+    }
+
+    private async Task filterPublishers()
+    {
+        if (filteredBooks != null && inputPublisherId.HasValue && publishers != null)
+        {
+            var selectedPublisher = publishers.FirstOrDefault(a => a.Id == inputPublisherId);
+            if(selectedPublisher!=null)
+            {
+                filteredBooks = filteredBooks.Where(itm => itm.PublisherId == selectedPublisher.Id).ToList();
+            }
+
+        }
+        await Task.CompletedTask;
+
+    }
+
+    private async Task filterGenres()
+    {
+        if (filteredBooks != null && inputGenreId.HasValue && genres != null)
+        {
+            var selectedGenre = genres.FirstOrDefault(a => a.Id == inputGenreId);
+            if (selectedGenre != null)
+            {
+                filteredBooks = filteredBooks.Where(itm => itm.GenreId == selectedGenre.Id).ToList();
+            }
+
+        }
+        await Task.CompletedTask;
+    }
+
+    private async Task ClearFilters()
+    {
+        isFilterPressed = false;
+
+        pagesGreater = null;
+        pagesLess = null;
+
+        publishDateAfter = null;
+        publishDateBefore = null;
+
+
+        inputCategory = 0;
+        inputBookColor = 0;
+
+        inputAuthorId = null;
+        inputPublisherId = null;
+        inputGenreId = null;
+
+        filteredBooks.Clear();
+        books.Clear();
+
+        await LoadBooksAsync();
+    }
+
+    private void OnPagesGreaterChanged(int? value)
+    {
+        pagesGreater = value ?? 0;
+    }
+
+    private void OnPagesLessChanged(int? value)
+    {
+        pagesLess = value ?? 0;
+    }
+}

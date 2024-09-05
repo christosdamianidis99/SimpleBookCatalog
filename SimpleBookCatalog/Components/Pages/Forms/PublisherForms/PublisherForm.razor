@@ -1,0 +1,87 @@
+﻿@inject IPublisherRepository repositoryPublishers
+@inject IBookRepository repositoryBooks
+@inject NavigationManager Navigation
+
+@if (Publisher is not null)
+{
+    <EditForm Enhance="true" method="post" FormName="AddOrEditPublisherForm" OnValidSubmit="AddOrEditPublisher" Model="Publisher" autocomplete="off">
+        <h3>@Title</h3>
+
+    @if (IsEditMode)
+    {
+        <input type="hidden" name="Publisher.Id" value="@Publisher.Id"/>
+    }
+
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <InputText id="name" @bind-Value="Publisher.Name" class="form-control shadow-none"/>
+    </div>
+
+    <div class="mb-3">
+        <label for="address" class="form-label">Address</label>
+        <InputText id="address" @bind-Value="Publisher.Address" class="form-control shadow-none"/>
+    </div>
+
+        <div class="mb-3">
+            <label for="website" class="form-label">Website</label>
+            <InputText id="website" @bind-Value="Publisher.Website" class="form-control shadow-none" />
+        </div>
+
+        <div class="mb-3">
+            <button class="btn btn-primary shadow-none">Submit</button>
+            <a href="/show-publishers" class="btn btn-secondary shadow-none ms-3">Back to List</a>
+        </div>
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+    </EditForm>
+    
+}
+@code {
+    [Parameter]
+    public bool IsEditMode { get; set; } = false;
+
+    [Parameter]
+    public int PublisherId { get; set; }
+
+    [Parameter]
+    public EventCallback<Publisher> OnValidAuthorSubmit { get; set; }
+
+    [SupplyParameterFromForm]
+    public Publisher? Publisher { get; set; }
+
+    private string Title => IsEditMode ? $"Edit Publisher {Publisher?.Name}" : "Add New Publisher";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (IsEditMode)
+        {
+            Publisher ??= await repositoryPublishers.GetByIdAsync(PublisherId);
+        }
+        else
+        {
+            Publisher ??= new Publisher();
+        }
+    }
+
+    private async Task AddOrEditPublisher()
+    {
+
+        if(Publisher!=null)
+        {
+            if (IsEditMode)
+            {
+                await repositoryPublishers.UpdateAsync(Publisher);
+                Navigation.NavigateTo("/show-publishers");
+            }
+            else
+            {
+                await repositoryPublishers.AddAsync(Publisher);
+                Navigation.NavigateTo("/show-publishers");
+            }
+        }
+        
+
+
+    }
+}

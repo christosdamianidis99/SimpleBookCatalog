@@ -1,0 +1,94 @@
+﻿@page "/show-authors"
+@inject IAuthorRepository AuthorRepository
+@using SimpleBookCatalog.Components.ReusableComponents
+
+<div class="authors-page container">
+
+    <h3 class="authors-title">Authors</h3>
+    <!-- Sort Search AddNew-->
+    <ReusableSortAddSearch TSortItem="SortTypeAuthors"
+                           @bind-SortChoice="SortChoice"
+                           @bind-SortChoice:after="OnSortChanged"
+                           searchQuery="@searchQuery"
+                           OnSearch="SearchAuthors"
+                           SearchPlaceHolder="name"
+                           AddNewLink="@($"/add-new-author")"
+                           AddNewString="author">
+    </ReusableSortAddSearch>
+
+
+
+    <ReusableLoopForShow TItem="Author" TCard="AuthorCard"
+                         Items="authors"
+                         FilteredItems="filteredAuthors"
+                         SortItems="items => SortAuthorsEnumerable(items)"
+                         SortFilteredItems="items => SortFilteredAuthorsEnumerable(items)"/>
+
+</div>
+
+@code {
+    [Parameter] public SortTypeAuthors? SortChoice { get; set; }
+
+    public static List<Author> authors = new List<Author>();
+    private string searchQuery = string.Empty;
+    private IEnumerable<Author>? filteredAuthors;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await LoadAuthorsAsync();
+    }
+
+    private async Task LoadAuthorsAsync()
+    {
+        authors = await AuthorRepository.GetAllAsyncWithPublishers();
+    }
+
+    private IEnumerable<Author> SortAuthorsEnumerable(IEnumerable<Author> authors)
+    {
+        if (authors == null) return Enumerable.Empty<Author>();
+
+        return SortChoice switch
+        {
+            SortTypeAuthors.FirstNameAsc => authors.OrderBy(b => b.FirstName),
+            SortTypeAuthors.FirstNameDesc => authors.OrderByDescending(b => b.FirstName),
+            SortTypeAuthors.SurnameAsc => authors.OrderBy(b => b.Surname),
+            SortTypeAuthors.SurnameDesc => authors.OrderByDescending(b => b.Surname),
+            SortTypeAuthors.DateOfBirth => authors.OrderBy(b => b.DateOfBirth),
+            _ => authors,
+        };
+    }
+
+    private IEnumerable<Author> SortFilteredAuthorsEnumerable(IEnumerable<Author> filteredAuthors)
+    {
+        if (filteredAuthors == null) return Enumerable.Empty<Author>();
+
+        return SortChoice switch
+        {
+            SortTypeAuthors.FirstNameAsc => filteredAuthors.OrderBy(b => b.FirstName),
+            SortTypeAuthors.FirstNameDesc => filteredAuthors.OrderByDescending(b => b.FirstName),
+            SortTypeAuthors.SurnameAsc => filteredAuthors.OrderBy(b => b.Surname),
+            SortTypeAuthors.SurnameDesc => filteredAuthors.OrderByDescending(b => b.Surname),
+            SortTypeAuthors.DateOfBirth => filteredAuthors.OrderBy(b => b.DateOfBirth),
+            _ => filteredAuthors,
+        };
+    }
+    private async Task OnSortChanged()
+    {
+        await Task.Delay(200);
+    }
+
+    private void SearchAuthors(ChangeEventArgs e)
+    {
+        searchQuery = e.Value?.ToString() ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(searchQuery))
+        {
+            filteredAuthors = authors;
+        }
+        else
+        {
+            filteredAuthors = authors.Where(b => CommonMechanics.SearchGeneric(b, searchQuery));
+        }
+    }
+}

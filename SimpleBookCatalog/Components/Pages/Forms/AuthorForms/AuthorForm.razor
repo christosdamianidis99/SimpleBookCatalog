@@ -1,0 +1,100 @@
+@inject IAuthorRepository repositoryAuthors
+@inject IBookRepository repositoryBooks
+@inject NavigationManager Navigation
+
+@if (Author is not null)
+{
+    <SimpleBookCatalog.Components.ReusableComponents.EditFormGeneric TModel="Author" Model="Author" Authors="null" Publishers="null" Genres="null" OnValidSubmit="HandleAuthorSubmit" EditMode="IsEditMode" />
+    @*
+    <EditForm Enhance="true" method="post" FormName="AddOrEditAuthorForm" OnValidSubmit="AddOrEditAuthor" Model="Author" autocomplete="off">
+        <h3>@Title</h3>
+
+        @if (IsEditMode)
+        {
+            <input type="hidden" name="Author.Id" value="@Author.Id" />
+        }
+
+        <div class="mb-3">
+            <label for="firstname" class="form-label">Firstname</label>
+            <InputText id="firstname" @bind-Value="Author.FirstName" class="form-control shadow-none" />
+        </div>
+
+        <div class="mb-3">
+            <label for="surname" class="form-label">Surname</label>
+            <InputText id="surname" @bind-Value="Author.Surname" class="form-control shadow-none" />
+
+        </div>
+
+        <div class="mb-3">
+            <label for="date-of-birth" class="form-label">
+                Date of birth
+            </label>
+            <InputDate id="date-of-birth" @bind-Value="Author.DateOfBirth" class="form-control shadow-none" />
+        </div>
+
+        <div class="mb-3">
+            <label for="biography" class="form-label">Biography</label>
+            <InputText id="biography" @bind-Value="Author.Biography" class="form-control shadow-none" />
+
+        </div>
+
+        <div class="mb-3">
+            <label for="nationality" class="form-label">Nationality</label>
+            <InputText id="nationality" @bind-Value="Author.Nationality" class="form-control shadow-none" />
+
+        </div>
+
+
+        <div class="mb-3">
+            <button class="btn btn-primary shadow-none">Submit</button>
+            <a href="/show-authors" class="btn btn-secondary shadow-none ms-3">Back to List</a>
+        </div>
+
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+    </EditForm>
+    *@
+}
+@code {
+    [Parameter]
+    public bool IsEditMode { get; set; } = false;
+
+    [Parameter]
+    public int AuthorId { get; set; }
+
+    [Parameter]
+    public EventCallback<Author> OnValidAuthorSubmit { get; set; }
+
+    [SupplyParameterFromForm]
+    public Author? Author { get; set; }
+
+    private string Title => IsEditMode ? $"Edit Author {Author.FirstName + " " + Author.Surname}" : "Add New Author";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (IsEditMode)
+        {
+            Author ??= await repositoryAuthors.GetByIdAsync(AuthorId);
+        }
+        else
+        {
+            Author ??= new Author();
+        }
+    }
+
+    private async Task HandleAuthorSubmit()
+    {
+        if (IsEditMode)
+        {
+            await repositoryAuthors.UpdateAsync(Author);
+            Navigation.NavigateTo("/show-authors");
+        }
+        else
+        {
+            await repositoryAuthors.AddAsync(Author);
+            Navigation.NavigateTo("/show-authors");
+        }
+
+
+    }
+}

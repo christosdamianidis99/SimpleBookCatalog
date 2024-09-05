@@ -1,0 +1,31 @@
+﻿@page "/edit-author/{id:int}"
+@using SimpleBookCatalog.Components.Pages.Forms.AuthorForms
+@inject IAuthorRepository Repository
+@inject NavigationManager Navigation
+
+<PageTitle>
+    Edit Author
+</PageTitle>
+
+
+<div class="row justify-content-center">
+    <div class="col-6">
+        <AuthorForm IsEditMode="true" AuthorId="@Id" OnValidAuthorSubmit="EditAuthorAsync" />
+        
+    </div>
+</div>
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+
+
+    private async Task EditAuthorAsync(Author author)
+    {
+
+        await Repository.UpdateAsync(author);
+        Navigation.NavigateTo("/show-authors");
+
+    }
+
+}

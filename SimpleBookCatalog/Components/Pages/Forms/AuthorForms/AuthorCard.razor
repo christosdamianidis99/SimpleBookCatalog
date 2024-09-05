@@ -1,0 +1,68 @@
+﻿<div class="author-card card shadow-sm mb-4">
+    <div class="card-body">
+        <!-- Author Name -->
+        <h5 class="author-name">@Author.FirstName @Author.Surname</h5>
+
+        <!-- Author Details -->
+        <div class="author-details mb-3">
+            <p class="author-dob">
+                <strong>Date of Birth:</strong> @(Author.DateOfBirth?.ToString("MMM dd, yyyy") ?? "N/A")
+            </p>
+            <p class="author-biography">
+                <strong>Biography:</strong> @(Author.Biography?.ToString() ?? "N/A")
+            </p>
+            <p class="author-nationality">
+                <strong>Nationality:</strong> @(Author.Nationality?.ToString() ?? "N/A")
+            </p>
+        </div>
+
+        <!-- Books Section -->
+        @if (!isCollapsed)
+        {
+            <h6 class="books-title text-muted">Books by @Author.FirstName @Author.Surname</h6>
+            <ul class="books-list list-group">
+                @foreach (var book in Author?.Books ?? Enumerable.Empty<Book>())
+                {
+                    <li class="book-item list-group-item">
+                        <strong>Title:</strong> @book.Title <br />
+                        <strong>Publication Date:</strong> @book.PublicationDate?.ToString("MMM dd, yyyy") <br />
+                        <strong>Publisher:</strong> @(book.Publisher?.Name ?? "N/A") <br />
+                        <strong>Category:</strong> @book.Category.ToString()
+                    </li>
+                }
+            </ul>
+        }
+
+
+
+        <!-- Button to toggle the collapse -->
+        <button class="btn btn-light btn-sm" type="button" @onclick="setCollapsedOrExpand">
+            @if (isCollapsed)
+            {
+                <h5>Show Books</h5>
+            }
+            else
+            {
+                <h5>Hide Books</h5>
+            }
+        </button>
+
+    </div>
+
+    <!-- Card Footer with Action Buttons -->
+    <div class="card-footer text-end">
+        <a href="@($"/edit-author/{Author.Id}")" class="btn btn-primary me-2">Edit</a>
+        <a href="@($"/confirm-delete-author/{Author.Id}")" class="btn btn-danger">Delete</a>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public required Author Author { get; set; }
+    private bool isCollapsed=true;
+
+    private void setCollapsedOrExpand()
+    {
+        isCollapsed = !isCollapsed;
+    }
+}

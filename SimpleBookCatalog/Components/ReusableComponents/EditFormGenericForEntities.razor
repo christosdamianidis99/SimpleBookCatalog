@@ -1,0 +1,93 @@
+﻿@typeparam TModel
+@typeparam TItem
+
+<div class="mb-3">
+
+    <label for="@IdPropertyName.ToLower()" class="form-label">
+        @DisplayLabelName
+    </label>
+    <select 
+        id="@IdPropertyName.ToLower()"
+            @bind="@SelectedId"
+
+    class="form-control shadow-none" >
+        <option value="0" disabled>Select @DisplayLabelName</option>
+        @foreach (var item in FilteredItems)
+        {
+           
+            <option value="@item?.GetType().GetProperty(IdPropertyName)?.GetValue(item)">
+                @item?.GetType().GetProperty(DisplayPropertyName)?.GetValue(item)
+            </option>
+        }
+    </select>
+</div>
+
+@code {
+    [Parameter]
+    public TModel Model { get; set; }
+
+    [Parameter]
+    public List<TItem> Items { get; set; } = new List<TItem>();
+
+    [Parameter]
+    public Func<IEnumerable<TItem>> FetchItems { get; set; }
+
+
+    [Parameter]
+    public string IdPropertyName { get; set; } = "Id";
+    [Parameter]
+    public string IdChildName { get; set; } = "Id";
+
+    [Parameter]
+    public string DisplayLabelName { get; set; } = "Label";
+    [Parameter]
+    public string DisplayPropertyNameForOptionSelect { get; set; } = "Name";
+    [Parameter]
+    public string DisplayPropertyName { get; set; } = "Name";
+
+
+    private IEnumerable<TItem> FilteredItems => FetchItems?.Invoke() ?? Items;
+
+
+
+    private string SelectedId
+    {
+        get
+        {
+            var property = Model?.GetType().GetProperty(IdChildName);
+            var propertyValue = property?.GetValue(Model);
+            return propertyValue?.ToString();
+        }
+        set
+        {
+            var property = Model?.GetType().GetProperty(IdChildName);
+            if (property != null && !string.IsNullOrEmpty(value))
+            {
+                var propertyType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+
+                try
+                {
+                    if (propertyType == typeof(int))
+                    {
+                        property.SetValue(Model, int.Parse(value));
+                    }
+                    else if (propertyType == typeof(Guid))
+                    {
+                        property.SetValue(Model, Guid.Parse(value));
+                    }
+                    else if (propertyType == typeof(string))
+                    {
+                        property.SetValue(Model, value);
+                    }
+                    // Add handling for other types as needed
+                }
+                catch (Exception ex)
+                {
+                    // Optionally handle conversion errors
+                    Console.WriteLine($"Error setting value: {ex.Message}");
+                }
+            }
+        }
+    }
+
+}

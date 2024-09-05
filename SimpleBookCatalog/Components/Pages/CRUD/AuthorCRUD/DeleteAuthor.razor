@@ -1,0 +1,60 @@
+﻿@page "/confirm-delete-author/{Id:int}"
+@rendermode InteractiveServer //onClick works because of this
+@inject IAuthorRepository Repository
+@inject NavigationManager Navigation
+
+<PageTitle>
+    Confirm Delete
+</PageTitle>
+@if (author != null)
+{
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <h3>Are you sure you want to delete @author.FirstName @author.Surname ?</h3>
+            <div class="actions">
+                <button class="btn btn-danger shadow-none" @onclick="ConfirmDelete">
+                    Yes
+                </button>
+                <button class="btn btn-secondary shadow-none" @onclick="CancelDelete">
+                    No
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public required int Id{ get; set; }
+    public Author? author{ get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        author =await Repository.GetByIdAsync(Id);
+        await Task.CompletedTask;
+        
+    }
+    private async Task ConfirmDelete()
+    {
+        Console.WriteLine("ConfirmDelete button clicked"); // Debugging line
+        try
+        {if (author != null)
+            {
+                await Repository.DeleteAsync(author.Id);
+                Navigation.NavigateTo("/show-authors");
+            }
+            
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error deleting author: {ex.Message}");
+        }
+    }
+
+    private void CancelDelete()
+    {
+        Console.WriteLine("CancelDelete button clicked"); // Debugging line
+        Navigation.NavigateTo("/show-authors");
+    }
+}

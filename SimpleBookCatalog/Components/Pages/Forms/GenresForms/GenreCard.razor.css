@@ -1,0 +1,98 @@
+﻿.card-body
+{
+    background-color:white;
+}
+/* General Container Styles */
+.genrer-page {
+    margin-top: 2rem; /* Space above the page content */
+}
+
+.genrer-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Sort Container Styles */
+.sort-container {
+    max-width: 300px; /* Limit the width of the sort container */
+}
+
+    .sort-container .form-label {
+        font-size: 1rem; /* Font size for the label */
+        font-weight: bold; /* Bold text */
+    }
+
+    .sort-container .form-select {
+        font-size: 1rem; /* Font size for the select element */
+        padding: 0.5rem; /* Padding inside the select box */
+        border: 1px solid #ced4da; /* Border color */
+        border-radius: 0.25rem; /* Rounded corners */
+    }
+
+/* Alert Styles */
+.alert-info {
+    background-color: #e9f5f9; /* Light blue background for info alert */
+    color: #0056b3; /* Dark blue text for info alert */
+}
+
+.alert-warning {
+    background-color: #fff3cd; /* Light yellow background for warning alert */
+    color: #856404; /* Dark yellow text for warning alert */
+}
+
+/* Genre Card Styles */
+.genre-card {
+    border: 1px solid #dee2e6; /* Light border color */
+    border-radius: 0.5rem; /* Rounded corners */
+    background-color: #ffffff; /* White background */
+    overflow: hidden; /* Ensure content stays within the card */
+    transition: box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+}
+
+    .genre-card:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow on hover */
+        transform: translateY(-5px); /* Lift the card up on hover */
+    }
+
+    /* Genre Card Body Styles */
+    .genre-card .card-body {
+        padding: 1.25rem; /* Padding inside the card */
+    }
+
+.genre-name {
+    font-size: 1.5rem; /* Larger font size for the genre name */
+    font-weight: bold; /* Bold text */
+    color: #343a40; /* Dark gray color for the genre name */
+}
+
+.books-title {
+    font-size: 1.25rem; /* Font size for the books title */
+    color: #6c757d; /* Muted gray color */
+    margin-bottom: 1rem; /* Space below the books title */
+}
+
+/* Books List Styles */
+.books-list {
+    list-style: none; /* Remove default list styles */
+    padding: 0; /* Remove padding */
+}
+
+.book-item {
+    border-bottom: 1px solid #dee2e6; /* Border between items */
+    padding: 0.75rem 0; /* Padding inside each item */
+}
+
+    .book-item:last-child {
+        border-bottom: none; /* Remove border from the last item */
+    }
+
+    .book-item strong {
+        display: block; /* Ensure labels are on separate lines */
+        margin-bottom: 0.25rem; /* Space below each label */
+        color: #495057; /* Dark gray color for labels */
+    }
+
+    .book-item br {
+        display: none; /* Remove line breaks, use margin instead */
+    }

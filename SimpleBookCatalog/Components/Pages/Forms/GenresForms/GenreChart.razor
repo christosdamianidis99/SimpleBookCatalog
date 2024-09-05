@@ -1,0 +1,158 @@
+﻿@page "/charts"
+@using ChartJs.Blazor.BarChart
+@using ChartJs.Blazor.Common
+@using ChartJs.Blazor.Common.Enums
+@using ChartJs.Blazor.PieChart
+@using ChartJs.Blazor.Util
+@inject SimpleBookCatalogDbContext DbContext
+@inject IGenreRepository GenrerRepository
+@inject IAuthorRepository AuthorRepository
+
+<Chart Config="GenreConfig"></Chart>
+
+<Chart Config="AuthorConfig" @ref="_chart"></Chart>
+
+@code {
+    private PieConfig GenreConfig = new(true)
+    {       
+            Options = new PieOptions
+            {
+                Responsive = true,
+                Title = new OptionsTitle
+                {
+                    Display = true,
+                    Text = "Genre pie"
+                }
+            }
+    };
+
+    private BarConfig AuthorConfig = new(true)
+        {
+            Options = new BarOptions
+            {
+                Responsive = true,
+                Legend = new Legend
+                {
+                    Position = Position.Top
+                },
+                Title = new OptionsTitle
+                {
+                    Display = true,
+                    Text = "ChartJs.Blazor Bar Chart"
+                }
+            }
+
+        };
+
+
+    private List<Genre> Genres = new List<Genre>();
+    private List<Author> Authors = new List<Author>();
+
+    private const int InitalCount = 7;
+    private Chart? _chart;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Genres = await GenrerRepository.GetAllAsyncWithBooks();
+        Authors = await AuthorRepository.GetAllAsyncWithPublishers();
+        MakeGenrePie();
+        MakeAuthors();
+    }
+
+    private void MakeGenrePie()
+    {
+        foreach (Genre genre in Genres)
+        {
+            GenreConfig.Data.Labels.Add(genre.Name);
+        }
+
+        List<int> GenresBooksCount = new List<int>();
+
+        foreach (var genre in Genres)
+        {
+            GenresBooksCount.Add(genre.Books.Count);
+        }
+
+
+        PieDataset<int> dataset = new PieDataset<int>(GenresBooksCount, true)
+            {
+                BackgroundColor = new[]
+                {
+                    ColorUtil.RandomColorString(),
+                    ColorUtil.RandomColorString(),
+                    ColorUtil.RandomColorString(),
+                    ColorUtil.RandomColorString(),
+                    ColorUtil.RandomColorString(),
+                    ColorUtil.RandomColorString(),
+                    ColorUtil.RandomColorString(),
+        }
+            };
+
+        GenreConfig.Data.Datasets.Add(dataset);
+    }
+
+
+
+    private void MakeAuthors()
+    {
+
+        List<int> authorsBooksPages = new List<int>();
+
+        foreach (var author in Authors)
+        {
+            foreach (var book in author.Books)
+            {
+                authorsBooksPages.Add(book.NumberOfPages.Value);
+            }
+
+        }
+        
+        IDataset<int> dataset1 = new BarDataset<int>(authorsBooksPages, true)
+            {
+                Label = "Authors Books number of pages",
+                BackgroundColor = ColorUtil.RandomColorString(),
+                BorderColor = ColorUtil.RandomColorString(),
+                BorderWidth = 1
+            };
+
+
+
+        List<int> authorsBooksSolds = new List<int>();
+
+        foreach (var author in Authors)
+        {
+            foreach (var book in author.Books)
+            {
+                authorsBooksSolds.Add(book.NumberOfBooksSold.Value);
+            }
+            
+        }
+
+        foreach (var author in Authors)
+        {
+            foreach (var book in author.Books)
+            {
+                AuthorConfig.Data.Labels.Add(author.FirstName + " " + author.Surname);
+            }
+
+        }
+
+
+        IDataset<int> dataset2 = new BarDataset<int>(authorsBooksSolds, true)
+            {
+                Label = "Author books sold",
+                BackgroundColor = ColorUtil.RandomColorString(),
+                BorderColor = ColorUtil.RandomColorString(),
+                BorderWidth = 1
+            };
+
+
+
+
+        AuthorConfig.Data.Datasets.Add(dataset1);
+        AuthorConfig.Data.Datasets.Add(dataset2);
+    }
+
+
+}

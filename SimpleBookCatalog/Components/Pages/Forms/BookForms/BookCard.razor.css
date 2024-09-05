@@ -1,0 +1,93 @@
+﻿/* General Page Styles */
+
+
+.books-page {
+    padding: 20px;
+}
+
+.books-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Book Card Styles */
+.book-card {
+    border-radius: 10px;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    overflow: hidden;
+}
+
+    .book-card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+/* Card Body */
+.card-body {
+    padding: 20px;
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+    color: #343a40;
+    font-weight: bold;
+    border-bottom: 2px solid #dee2e6;
+    padding-bottom: 5px;
+}
+
+/* Card Title */
+.card-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #343a40;
+}
+
+/* Card Text */
+.card-text {
+    margin-bottom: 10px;
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+/* Clickable Links */
+.text-primary {
+    color: #007bff;
+    font-weight: bold;
+    transition: color 0.2s ease-in-out;
+}
+
+    .text-primary:hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+
+/* Card Footer */
+.card-footer {
+    background-color: #f1f1f1;
+    border-top: 1px solid #dee2e6;
+    text-align: right;
+}
+
+    .card-footer .btn {
+        border-radius: 5px;
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+
+    .card-footer .btn-primary:hover,
+    .card-footer .btn-secondary:hover {
+        transform: translateY(-2px);
+    }
+
+/* Spacing between sections */
+.author-details,
+.publisher-details,
+.book-details {
+    margin-bottom: 20px;
+}

@@ -1,0 +1,104 @@
+﻿<div class="book-card card shadow-sm">
+    <div class="card-body">
+        <h5 class="card-title">@Book.Title</h5>
+
+        <div class="author-details mb-3">
+            <h6 class="section-title">Author Details</h6>
+            <p class="card-text">
+                <strong>Author:</strong>
+                @if (Book.Author != null)
+                {
+                    <a href="@($"/show-authors")" class="text-decoration-none text-primary">@Book.Author.FirstName @Book.Author.Surname</a>
+                }
+                else
+                {
+                    <span>N/A</span>
+                }
+            </p>
+            <p class="card-text">
+                <strong>Date of Birth:</strong> @(Book.Author?.DateOfBirth?.ToString("MMM dd, yyyy") ?? "N/A")
+            </p>
+        </div>
+
+        <div class="publisher-details mb-3">
+            <h6 class="section-title">Publisher Details</h6>
+            <p class="card-text">
+                <strong>Publisher:</strong>
+                @if (Book.Publisher != null)
+                {
+                    <a href="@($"/show-publishers")" class="text-decoration-none text-primary">@Book.Publisher.Name</a>
+                }
+                else
+                {
+                    <span>N/A</span>
+                }
+            </p>
+            <p class="card-text">
+                <strong>Publication Date:</strong> @Book.PublicationDate?.ToString("MMM dd, yyyy")
+            </p>
+        </div>
+
+        <!-- Collapsible Book Details Section -->
+        @if(!isCollapsed)
+        {
+            <div class="book-details">
+                <h6 class="section-title">Book Details</h6>
+                <p class="card-text">
+                    <strong>Category:</strong> @Book.Category.ToString()
+                </p>
+                <p class="card-text">
+                    <strong>Genre:</strong>
+                    <a href="@($"/show-genres")" class="text-decoration-none text-primary">@(Book.Genre?.Name ?? "N/A")</a>
+                </p>
+                <p class="card-text">
+                    <strong>Color:</strong> @Book.BookColors.ToString()
+                </p>
+                <p class="card-text">
+                    <strong>Number of Pages:</strong> @(Book.NumberOfPages?.ToString() ?? "N/A")
+                </p>
+                <p class="card-text">
+                    <strong>Number of Books Sold:</strong> @(Book.NumberOfBooksSold?.ToString() ?? "N/A")
+                </p>
+                <p class="card-text">
+                    <strong>Language:</strong> @(Book.Language?.ToString() ?? "N/A")
+                </p>
+                <p class="card-text">
+                    <strong>Price:</strong> @(Book.Price?.ToString("C") ?? "N/A") <!-- Currency formatted -->
+                </p>
+                <p class="card-text">
+                    <strong>Summary:</strong> @(Book.Summary?.ToString() ?? "N/A")
+                </p>
+            </div>
+        }
+        
+        <!-- Button to toggle the collapse -->
+        <button class="btn btn-light btn-sm" type="button" @onclick="setCollapsedOrExpand">
+            @if (isCollapsed)
+            {
+                <h5>Show more</h5>
+            }
+            else
+            {
+                <h5>Show less</h5>
+            }
+        </button>
+
+
+    </div>
+    <div class="card-footer text-end">
+        <a href="@($"/edit-book/{Book.Id}")" class="btn btn-primary me-2">Edit</a>
+        <a href="@($"/confirm-delete-book/{Book.Id}")" class="btn btn-secondary">Delete</a>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public required Book Book { get; set; }
+
+    private bool isCollapsed=true;
+
+    public void setCollapsedOrExpand()
+    {
+        isCollapsed = !isCollapsed;
+    }
+}

@@ -1,0 +1,103 @@
+﻿@page "/show-publishers"
+@inject IPublisherRepository PublisherRepository
+@using SimpleBookCatalog.Components.ReusableComponents
+
+<div class="publishers-page container"
+        <h3 class="publishers-title">Publishers</h3>
+            <!-- Sort Search AddNew-->
+    <ReusableSortAddSearch TSortItem="SortTypePublishers"
+                           @bind-SortChoice="SortChoice"
+                           @bind-SortChoice:after="OnSortChanged"
+                           searchQuery="@searchQuery"
+                           OnSearch="SearchPublishers"
+                           SearchPlaceHolder="title"
+                           AddNewLink="@($"/add-new-publisher")"
+                           AddNewString="book">
+    </ReusableSortAddSearch>
+
+    <ReusableLoopForShow TItem="Publisher" TCard="PublisherCard"
+                         Items="publishers"
+                         FilteredItems="filteredPublishers"
+                         SortItems="items=>SortPublishersEnumerable(items)"
+                         SortFilteredItems="items=>SortFilteredPublishersEnumerable(items)"/>
+
+
+</div>
+
+@code {
+    [Parameter] public SortTypePublishers? SortChoice { get; set; }
+    public static List<Publisher> publishers = new List<Publisher>();
+    private string searchQuery = string.Empty;
+    private IEnumerable<Publisher>? filteredPublishers;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await LoadPublishersAsync();
+    }
+
+    private async Task LoadPublishersAsync()
+    {
+        publishers = await PublisherRepository.GetAllAsyncWithAuthors();
+    }
+
+    private IEnumerable<Publisher> SortPublishersEnumerable(IEnumerable<Publisher> publishers)
+    {
+        if (publishers == null)
+        {
+            return Enumerable.Empty<Publisher>();
+        }
+
+        return SortChoice switch
+        {
+            SortTypePublishers.NameAsc => publishers.OrderBy(b => b.Name),
+            SortTypePublishers.NameDesc => publishers.OrderByDescending(b => b.Name),
+            SortTypePublishers.AddressAsc => publishers.OrderBy(b => b.Address),
+            SortTypePublishers.AddressDesc => publishers.OrderByDescending(b => b.Address),
+            SortTypePublishers.Website => publishers.OrderBy(b => b.Website),
+            _ => publishers,
+        };
+
+    }
+
+    private IEnumerable<Publisher> SortFilteredPublishersEnumerable(IEnumerable<Publisher> filteredPublishers)
+    {
+        if (filteredPublishers == null)
+        {
+            return Enumerable.Empty<Publisher>();
+        }
+
+        return SortChoice switch
+        {
+            SortTypePublishers.NameAsc => filteredPublishers.OrderBy(b => b.Name),
+            SortTypePublishers.NameDesc => filteredPublishers.OrderByDescending(b => b.Name),
+            SortTypePublishers.AddressAsc => filteredPublishers.OrderBy(b => b.Address),
+            SortTypePublishers.AddressDesc => filteredPublishers.OrderByDescending(b => b.Address),
+            SortTypePublishers.Website => filteredPublishers.OrderBy(b => b.Website),
+            _ => filteredPublishers,
+        };
+
+    }
+
+    private async Task OnSortChanged()
+    {
+        await Task.Delay(200);
+    }
+
+
+    private void SearchPublishers(ChangeEventArgs e)
+    {
+        searchQuery = e.Value?.ToString() ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(searchQuery))
+        {
+            filteredPublishers = publishers;
+        }
+        else
+        {
+            filteredPublishers = publishers.Where(b => CommonMechanics.SearchGeneric(b, searchQuery));
+        }
+    }
+}

@@ -1,0 +1,23 @@
+﻿<div class="genre-card card shadow-sm mb-3">
+    <div class="card-body">
+        <h5 class="genre-name">@genre.Name</h5>
+        <h6 class="books-title text-muted">Books</h6>
+        <ul class="books-list list-group">
+            @foreach (var book in genre?.Books ?? Enumerable.Empty<Book>())
+            {
+                <li class="book-item list-group-item">
+                    <strong>Title:</strong> @book.Title <br />
+                    <strong>Publication Date:</strong> @book.PublicationDate?.ToString("MMM ddd dd, yyyy") <br />
+                    <strong>Author:</strong> @(book.Author?.FirstName?.ToString() ?? "N/A") @(book.Author?.Surname?.ToString() ?? "N/A")<br />
+                    <strong>Publisher:</strong> @(book.Publisher?.Name.ToString() ?? "N/A")<br />
+                    <strong>Category:</strong> @book.Category.ToString()
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public required Genre genre { get; set; }
+}

@@ -1,0 +1,87 @@
+﻿@page "/show-genres"
+@inject IGenreRepository GenrerRepository
+@inject IBookRepository BookRepository
+@using SimpleBookCatalog.Components.ReusableComponents
+
+
+<div class="genrer-page container">
+
+    <h4 class="genrer-title">Genres</h4>
+    <!-- Sort Search AddNew-->
+    <ReusableSortAddSearch TSortItem="SortTypeGenres"
+                           @bind-SortChoice="SortChoice"
+                           @bind-SortChoice:after="OnSortChanged"
+                           searchQuery="@searchQuery"
+                           OnSearch="SearchGenres"
+                           SearchPlaceHolder="title"
+                           AddNewLink="@null"
+                           AddNewString="@null">
+    </ReusableSortAddSearch>
+
+   <ReusableLoopForShow TItem="Genre" TCard="GenreCard"
+                        Items="genres"
+                        FilteredItems="filteredGenres"
+                        SortItems="items=>SortGenresEnumerable(items)"
+                        SortFilteredItems="items=>SortFilteredGenresEnumerable(items)"/>
+</div>
+
+@code {
+    [Parameter] public SortTypeGenres? SortChoice { get; set; }
+    public static List<Genre> genres = new List<Genre>();
+    private string? searchQuery { get; set; }
+    private IEnumerable<Genre>? filteredGenres;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await LoadGenresAsync();
+    }
+
+    private async Task LoadGenresAsync()
+    {
+
+        genres = await GenrerRepository.GetAllAsyncWithBooks();
+
+    }
+    private IEnumerable<Genre> SortGenresEnumerable(IEnumerable<Genre> genres)
+    {
+        if (genres == null) return Enumerable.Empty<Genre>();
+
+        return SortChoice switch
+        {
+            SortTypeGenres.NameAsc => genres.OrderBy(b => b.Name),
+            SortTypeGenres.NameDesc => genres.OrderByDescending(b => b.Name),
+            _ =>genres,
+        };
+    }
+
+    private IEnumerable<Genre> SortFilteredGenresEnumerable(IEnumerable<Genre> filteredGenres)
+    {
+        if (filteredGenres == null) return Enumerable.Empty<Genre>();
+
+        return SortChoice switch
+        {
+            SortTypeGenres.NameAsc => filteredGenres.OrderBy(b => b.Name),
+            SortTypeGenres.NameDesc => filteredGenres.OrderByDescending(b => b.Name),
+            _ => filteredGenres,
+        };
+    }
+
+    private async Task OnSortChanged()
+    {
+        await Task.Delay(200);
+    }
+
+    private void SearchGenres(ChangeEventArgs e)
+    {
+        searchQuery = e.Value?.ToString() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(searchQuery))
+        {
+            filteredGenres = genres;
+        }
+        else
+        {
+            filteredGenres = genres.Where(b => CommonMechanics.SearchGeneric(b, searchQuery));
+        }
+    }
+}

@@ -1,0 +1,62 @@
+﻿@page "/confirm-delete-publisher/{Id:int}"
+@rendermode InteractiveServer
+
+@inject IPublisherRepository Repository
+@inject NavigationManager Navigation
+
+<PageTitle>
+    Confirm Delete
+</PageTitle>
+
+@if (publisher != null)
+{
+    <div class="row justify-content-center">
+    <div class="col-6">
+        <h3>Are you sure you want to delete @publisher.Name ?</h3>
+        <div class="actions">
+            <button class="btn btn-danger shadow-none" @onclick="ConfirmDelete">
+                Yes
+            </button>
+
+                <button class="btn btn-secondary shadow-none" @onclick="CancelDelete">
+                No
+            </button>
+        </div>
+    </div>
+</div>
+}    
+@code {
+    [Parameter]
+    public required int Id{ get; set; }
+    public Publisher? publisher{ get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        publisher = await Repository.GetByIdAsync(Id);
+        await Task.CompletedTask;
+    }
+
+    private async Task ConfirmDelete()
+    {
+        Console.WriteLine("ConfirmDelete button clicked"); // Debugging line
+        try
+        {
+            if (publisher != null)
+            {
+                await Repository.DeleteAsync(publisher.Id);
+                Navigation.NavigateTo("/show-publishers");
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error deleting publisher: {ex.Message}");
+        }
+    }
+
+    private void CancelDelete()
+    {
+        Console.WriteLine("CancelDelete button clicked"); // Debugging line
+        Navigation.NavigateTo("/show-publishers");
+    }
+
+}

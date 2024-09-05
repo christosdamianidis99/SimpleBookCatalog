@@ -1,0 +1,287 @@
+﻿@using System.Reflection
+@using SimpleBookCatalog.Domain
+@typeparam TModel
+
+
+<EditForm Enhance="true" method="post" autocomplete="off" Model="@Model" OnValidSubmit="@HandleFormSubmit">
+    @foreach (var property in typeof(TModel).GetProperties())
+    {
+        var isForForm = property.GetCustomAttribute<IsForFormAttribute>()?.IsForForm ?? false;
+        if (EditMode)
+        {
+            <input type="hidden" name="@GetPropertyIdName()" value="@GetPropertyIdValue()" />
+        }
+
+        var displayName = property.GetCustomAttribute<DisplayNameAttribute>()?.Name ?? property.Name;
+
+        @if (IsString(property.PropertyType) && isForForm)
+        {
+            <div class="mb-3">
+                <label for="@property.Name" class="form-label">
+                    @displayName
+            </label>
+            <input id="@property.Name"
+                   type="text"
+                   class="form-control shadow-none"
+                   value="@GetStringValue(property)"
+                   @onchange="(e) => property.SetValue(Model, e.Value)" />
+                   </div>
+        }
+        else if (IsInt(property.PropertyType) && isForForm)
+        {
+            <div class="mb-3">
+            <label for="@property.Name" class="form-label">
+                    @displayName
+                </label>
+
+                <input id="@property.Name"
+                       class="form-control shadow-none"
+                       type="number"
+                       value="@(GetNullableIntValue(property)?.ToString() ?? string.Empty)"
+                       @oninput="(e) => SetNullableIntValue(property, string.IsNullOrEmpty(e.Value.ToString()) ? (int?)null : int.Parse(e.Value.ToString()))" />
+
+            </div>
+        }
+        else if (IsDecimal(property.PropertyType) && isForForm)
+        {
+            <div class="mb-3">
+                <label for="@property.Name" class="form-label">
+                    @displayName
+                </label>
+                <input id="@property.Name"
+                       class="form-control shadow-none"
+                       type="number"
+                       step="0.01"
+                       value="@(GetNullableDecimalValue(property)?.ToString() ?? string.Empty)"
+                       @onchange="(e) => SetNullableDecimalValue(property, string.IsNullOrEmpty(e.Value.ToString()) ? (decimal?)null : decimal.Parse(e.Value.ToString()))" />
+            </div>
+        }
+        else if (IsDate(property.PropertyType) && isForForm)
+        {
+            <div class="mb-3">
+                <label for="@property.Name" class="form-label">@displayName</label>
+                <input id="@property.Name"
+                       type="date"
+                       class="form-control shadow-none"
+                       value="@GetDateValue(property)"
+                       @onchange="(e) => HandleDateChange(e.Value.ToString(), property)" />
+            </div>
+        }
+        else if (IsEnum(property.PropertyType) && isForForm)
+        {
+            <label for="category" class="form-label">
+                @displayName
+
+            </label>
+            <select id="@property.Name"
+                         class="form-control shadow-none"
+                         value="@GetEnumValue(property)"
+                         @onchange="e => SetEnumValue(property, e.Value)">
+                <option value="0">Select @displayName</option>
+                @foreach (var enumValue in Enum.GetValues(property.PropertyType))
+                {
+                    <option value="@enumValue">@enumValue.ToString()</option>
+                    
+                }
+            </select>
+        }
+        
+    }
+
+    @if (FilterEligibleAuthors().Any())
+    {
+        <EditFormGenericForEntities TModel="TModel"
+                                    TItem="Author"
+                                    Model="Model"
+                                    Items="FilterEligibleAuthors()"
+                                    DisplayPropertyName="FullName"
+                                    DisplayLabelName="Authors"
+                                    DisplayPropertyNameForOptionSelect="Author"
+                                    IdChildName="AuthorId"
+                                    IdPropertyName="Id" />
+    }
+
+    @if (Publishers != null)
+    {
+        <EditFormGenericForEntities TModel="TModel"
+                                    TItem="Publisher"
+                                    Model="Model"
+                                    Items="Publishers"
+                                    DisplayPropertyName="Name"
+                                    DisplayLabelName="Publishers"
+                                    DisplayPropertyNameForOptionSelect="Publisher"
+                                    IdChildName="PublisherId"
+                                    IdPropertyName="Id" />
+    }
+
+    @if (Genres != null)
+    {
+        <EditFormGenericForEntities TModel="TModel"
+                                    TItem="Genre"
+                                    Model="Model"
+                                    Items="Genres"
+                                    DisplayPropertyName="Name"
+                                    DisplayLabelName="Genres"
+                                    DisplayPropertyNameForOptionSelect="Genre"
+                                    IdChildName="GenreId"
+                                    IdPropertyName="Id" />
+    }
+                
+
+    <button type="button"class="btn btn-primary" onclick="@test">test</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+        @code {
+        [Parameter]
+    public TModel? Model { get; set; }
+
+    [Parameter]
+    public EventCallback<TModel> OnValidSubmit { get; set; }
+
+
+    [Parameter] public List<Author>? Authors { get; set; }
+    [Parameter] public List<Publisher>? Publishers { get; set; }
+    [Parameter] public List<Genre>? Genres { get; set; }
+    [Parameter] public bool EditMode{ get; set; }
+    private DateTime? PublicationDate
+    {
+        get => (DateTime?)Model?.GetType().GetProperty(nameof(PublicationDate))?.GetValue(Model);
+        set => Model?.GetType().GetProperty(nameof(PublicationDate))?.SetValue(Model, value);
+    }
+
+    private object selectedEnumValue;
+
+    private bool IsEnum(Type type) => type.IsEnum;
+    private bool IsString(Type type) => type == typeof(string);
+
+    private bool IsDate(Type type) => type == typeof(DateTime) || type == typeof(DateTime?);
+
+    private bool IsInt(Type type) => type == typeof(int) || type == typeof(int?);
+    private bool IsDecimal(Type type) => type == typeof(decimal) || type == typeof(decimal?);
+    private Task HandleFormSubmit()
+    {
+        return OnValidSubmit.InvokeAsync(Model);
+    }
+    
+
+
+    public void test()
+    {
+        var xx = Model;
+    }
+
+
+
+    //------------------Id getter setter------------------------
+    private string GetPropertyIdName()
+    {
+        return $"{typeof(TModel).Name}.{"Id"}";
+    }
+
+    private object GetPropertyIdValue()
+    {   
+        var property = typeof(TModel).GetProperty("Id");
+        return property?.GetValue(Model);
+    }
+
+    //------------------Int input fields getter setter------------------------
+    private int? GetNullableIntValue(System.Reflection.PropertyInfo property)
+    {
+        var value = property.GetValue(Model);
+        return value != null ? (int?)Convert.ToInt32(value) : null;
+    }
+
+    private void SetNullableIntValue(System.Reflection.PropertyInfo property, int? value)
+    {
+        property.SetValue(Model, value);
+    }
+
+    //------------------Decimal input fields getter setter------------------------
+    private decimal? GetNullableDecimalValue(System.Reflection.PropertyInfo property)
+    {
+        var value = property.GetValue(Model);
+        return value != null ? (decimal?)Convert.ToDecimal(value) : null;
+    }
+    private void SetNullableDecimalValue(System.Reflection.PropertyInfo property, decimal? value)
+    {
+        property.SetValue(Model, value);
+    }
+
+    //------------------String input fields getter setter------------------------
+    private string GetStringValue(System.Reflection.PropertyInfo property)
+    {
+        var value = property.GetValue(Model);
+        return value?.ToString() ?? string.Empty;
+    }
+    
+    private void SetStringValue(System.Reflection.PropertyInfo property, string value)
+    {
+        property.SetValue(Model, value);
+    }
+
+    //------------------Enum input fields getter setter------------------------
+    private object GetEnumValue(System.Reflection.PropertyInfo property)
+    {
+        return property.GetValue(Model) ?? string.Empty; // Return empty string if the value is null
+    }
+
+    private void SetEnumValue(System.Reflection.PropertyInfo property, object value)
+    {
+        if (Enum.TryParse(property.PropertyType, value?.ToString(), out var enumValue))
+        {
+            property.SetValue(Model, enumValue);
+            selectedEnumValue = enumValue; // Update the selected value after setting it
+        }
+    }
+
+    //------------------Date input fields getter setter------------------------
+    private string GetDateValue(System.Reflection.PropertyInfo property)
+    {
+        var value = property.GetValue(Model);
+        return value is DateTime dateValue ? dateValue.ToString("yyyy-MM-dd") : string.Empty;
+    }
+
+    private void HandleDateChange(string value, System.Reflection.PropertyInfo property)
+    {
+        if (DateTime.TryParse(value, out var dateValue))
+        {
+            property.SetValue(Model, dateValue);
+
+            // If the changed property is the publication date, update the publication date in the code
+            if (property.Name == nameof(PublicationDate))
+            {
+                PublicationDate = dateValue;
+            }
+        }
+        else
+        {
+            property.SetValue(Model, null);
+        }
+    }
+
+
+
+    //------------------Filter authors and enable/disable input------------------------
+    private bool IsAuthorSelectDisabled(TModel model)
+    {
+        if (PublicationDate == null)
+            return true;
+
+        return !FilterEligibleAuthors().Any();
+    }
+
+
+    private List<Author> FilterEligibleAuthors()
+    {
+        if (PublicationDate == null)
+            return new List<Author>();
+
+        return Authors
+            .Where(author => author.DateOfBirth.HasValue &&
+                             (PublicationDate.Value.Year - author.DateOfBirth.Value.Year >= 18))
+            .ToList();
+    }
+
+
+}
