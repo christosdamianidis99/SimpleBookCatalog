@@ -179,7 +179,6 @@
 
 
     <div class="mb-3">
-        <button  class="btn btn-primary" onclick="@test">test</button>
         <button type="submit" class="btn btn-primary">Submit</button>
         <a href="@backToList" class="btn btn-secondary shadow-none ms-3">Back to List</a>
     </div>
@@ -226,11 +225,7 @@
     {
         return OnValidSubmit.InvokeAsync(Model);
     }
-    private void test()
-    {
 
-        var x = Model;
-    }
 
     //------------------Id getter setter------------------------
     private string GetPropertyIdName()

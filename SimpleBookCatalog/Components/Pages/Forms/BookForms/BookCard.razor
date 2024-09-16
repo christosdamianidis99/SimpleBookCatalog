@@ -60,7 +60,7 @@
                     <strong>Number of Books Sold:</strong> @(Book.NumberOfBooksSold?.ToString() ?? "N/A")
                 </p>
                 <p class="card-text">
-                    <strong>Language:</strong> @(Book.Language?.ToString() ?? "N/A")
+                    <strong>Language:</strong> @(Book.Language.ToString() ?? "N/A")
                 </p>
                 <p class="card-text">
                     <strong>Price:</strong> @(Book.Price?.ToString("C") ?? "N/A") <!-- Currency formatted -->

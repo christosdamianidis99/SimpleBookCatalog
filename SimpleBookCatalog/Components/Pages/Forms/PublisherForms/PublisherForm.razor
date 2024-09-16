@@ -1,36 +1,21 @@
 ﻿@inject IPublisherRepository repositoryPublishers
 @inject IBookRepository repositoryBooks
 @inject NavigationManager Navigation
+@using SimpleBookCatalog.Components.ReusableComponents
 
 @if (Publisher is not null)
 {
-    <EditForm Enhance="true" method="post" FormName="AddOrEditPublisherForm" OnValidSubmit="AddOrEditPublisher" Model="Publisher" autocomplete="off">
-        <h3>@Title</h3>
+    <EditForm Enhance="true"  FormName="AddOrEditPublisherForm" Model="Publisher">
 
-    @if (IsEditMode)
-    {
-        <input type="hidden" name="Publisher.Id" value="@Publisher.Id"/>
-    }
+        <EditFormGeneric 
+        TModel="Publisher" 
+        Model="Publisher" 
+        Authors="null"
+        Publishers="null" 
+        Genres="null" 
+        OnValidSubmit="AddOrEditPublisher"
+        EditMode="IsEditMode" backToList="/show-publishers"/>
 
-    <div class="mb-3">
-        <label for="name" class="form-label">Name</label>
-        <InputText id="name" @bind-Value="Publisher.Name" class="form-control shadow-none"/>
-    </div>
-
-    <div class="mb-3">
-        <label for="address" class="form-label">Address</label>
-        <InputText id="address" @bind-Value="Publisher.Address" class="form-control shadow-none"/>
-    </div>
-
-        <div class="mb-3">
-            <label for="website" class="form-label">Website</label>
-            <InputText id="website" @bind-Value="Publisher.Website" class="form-control shadow-none" />
-        </div>
-
-        <div class="mb-3">
-            <button class="btn btn-primary shadow-none">Submit</button>
-            <a href="/show-publishers" class="btn btn-secondary shadow-none ms-3">Back to List</a>
-        </div>
         <DataAnnotationsValidator />
         <ValidationSummary />
 

@@ -48,10 +48,10 @@ namespace SimpleBookCatalog.Domain.Entities
 
 
         [Required(ErrorMessage = "Please specify the language")]
-        [StringLength(50)]
+        [EnumDataType(typeof(Language), ErrorMessage = "Please select a valid language")]
+        [DisplayName("Language")]
         [IsForForm(true)]
-        [isStringWithoutNumbers(true)]
-        public string? Language { get; set; }
+        public Language Language { get; set; }
 
         [Required(ErrorMessage ="Please enter a summary")]
         [StringLength(1000, ErrorMessage = "Summary is too long")]

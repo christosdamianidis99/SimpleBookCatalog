@@ -1,4 +1,5 @@
 ﻿
+using SimpleBookCatalog.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -38,12 +39,11 @@ namespace SimpleBookCatalog.Domain.Entities
         [IsForForm(true)]
         public string? Biography { get; set; }
 
-        [StringLength(100)]
         [DisplayName("Nationality")]
         [Required(ErrorMessage = "Please provide a Nationality")]
         [IsForForm(true)]
-        [isStringWithoutNumbers(true)]
-        public string? Nationality { get; set; }
+        [EnumDataType(typeof(Nationality), ErrorMessage = "Please select a valid language")]
+        public Nationality AuthorNationality { get; set; } // Updated from string to enum
 
 
         [IsForForm(false)]

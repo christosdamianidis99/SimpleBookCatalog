@@ -9,7 +9,17 @@
 @if (Book is not null)
 { 
     <EditForm Enhance="true" FormName="AddOrEditBookForm" Model="Book">
- <EditFormGeneric  TModel="Book" Model="Book" Authors="FilteredAuthors" Publishers="Publishers" Genres="Genres" OnValidSubmit="HandleBookSubmit" EditMode="IsEditMode" backToList="/show-books"/>
+
+ <EditFormGeneric  
+     TModel="Book" 
+     Model="Book" 
+     Authors="FilteredAuthors" 
+     Publishers="Publishers" 
+     Genres="Genres" 
+     OnValidSubmit="HandleBookSubmit" 
+     EditMode="IsEditMode" 
+     backToList="/show-books"/>
+
     <DataAnnotationsValidator />
     <ValidationSummary />
     </EditForm>
