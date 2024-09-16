@@ -17,3 +17,10 @@ This app allows users to view, add, edit, and manage book entries. It demonstrat
 - **Razor Components**: For creating reusable components.
 - **Entity Framework Core**: Object-relational mapper (ORM) for database access.
 - **SQLite / SQL Server (or other DB)**: Database to store book information (you can specify which DB you're using).
+
+
+## **Unique Features**
+
+- **Custom Generic Sorting Object**: A flexible, reusable sorting mechanism for every entity-related form. This eliminates the need to manually write sorting logic for each form, reducing code duplication and simplifying maintenance.
+
+- **Dynamic Form Generation**: A powerful custom generic object dynamically generates forms based on entity attributes. Instead of manually defining each form field, this object reads the entity's properties and creates the necessary form components. This approach significantly reduces the amount of code required to manage forms, making it easier to scale and maintain.
