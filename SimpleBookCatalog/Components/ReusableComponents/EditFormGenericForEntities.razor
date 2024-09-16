@@ -11,7 +11,7 @@
             @bind="@SelectedId"
 
     class="form-control shadow-none" >
-        <option value="0" disabled>Select @DisplayLabelName</option>
+        <option value="" disabled>Select @DisplayPropertyNameForOptionSelect</option>
         @foreach (var item in FilteredItems)
         {
            
@@ -20,6 +20,9 @@
             </option>
         }
     </select>
+    
+
+
 </div>
 
 @code {
@@ -89,5 +92,6 @@
             }
         }
     }
+
 
 }

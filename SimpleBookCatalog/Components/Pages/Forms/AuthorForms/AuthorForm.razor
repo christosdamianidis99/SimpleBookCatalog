@@ -4,7 +4,7 @@
 
 @if (Author is not null)
 {
-    <SimpleBookCatalog.Components.ReusableComponents.EditFormGeneric TModel="Author" Model="Author" Authors="null" Publishers="null" Genres="null" OnValidSubmit="HandleAuthorSubmit" EditMode="IsEditMode" />
+    <SimpleBookCatalog.Components.ReusableComponents.EditFormGeneric TModel="Author" Model="Author" Authors="null" Publishers="null" Genres="null" OnValidSubmit="HandleAuthorSubmit" EditMode="IsEditMode" backToList="/show-authors" />
     @*
     <EditForm Enhance="true" method="post" FormName="AddOrEditAuthorForm" OnValidSubmit="AddOrEditAuthor" Model="Author" autocomplete="off">
         <h3>@Title</h3>

@@ -50,31 +50,61 @@ namespace SimpleBookCatalog.Domain.Entities
         [Required(ErrorMessage = "Please specify the language")]
         [StringLength(50)]
         [IsForForm(true)]
+        [isStringWithoutNumbers(true)]
         public string? Language { get; set; }
 
         [Required(ErrorMessage ="Please enter a summary")]
         [StringLength(1000, ErrorMessage = "Summary is too long")]
         [IsForForm(true)]
+        
         public string? Summary { get; set; }
 
         [Required(ErrorMessage = "Please enter the book's price")]
-        [Range(0, 999.99, ErrorMessage = "Price must be a positive value")]
+        [Range(0.0,9999.0, ErrorMessage ="Price value must be between 0-9999")]
         [IsForForm(true)]
         public decimal? Price { get; set; }
 
-        [Required]
+
         [IsForForm(false)]
+        [Required]
+
+        [Range(1, int.MaxValue,ErrorMessage = "Please provide an Author")]
+
         public int AuthorId { get; set; }
+
+
+
         public Author? Author { get; set; }
 
-        [Required]
+
+
+
+
         [IsForForm(false)]
+
+        [Required]
+        [Range(1, int.MaxValue,ErrorMessage = "Please provide a Genre")]
         public int GenreId { get; set; }
-        public Genre? Genre { get; set; }
+
+       
         
-        [Required]
+
+        public Genre? Genre { get; set; }
+
+
+
+
+
+
         [IsForForm(false)]
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Please provide a Publisher")]
+
         public int PublisherId { get; set; }
+
+
+
+
         public Publisher? Publisher { get; set; }
 
 

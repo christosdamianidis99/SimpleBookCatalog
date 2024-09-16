@@ -12,7 +12,7 @@ namespace SimpleBookCatalog.Domain.Entities
         [RegularExpression(@"^[A-Z]+[a-zA-Z\s]*$", ErrorMessage = "Only letters are allowed")]
         [StringLength(100)]
         [DisplayName("First name")]
-
+        [isStringWithoutNumbers(true)]
         [IsForForm(true)]
         public string? FirstName { get; set; }
 
@@ -20,6 +20,7 @@ namespace SimpleBookCatalog.Domain.Entities
         [Required(ErrorMessage = "Please provide surname")]
         [StringLength(100)]
         [IsForForm(true)]
+        [isStringWithoutNumbers(true)]
         [DisplayName("Surname")]
 
         public string? Surname { get; set; }
@@ -41,6 +42,7 @@ namespace SimpleBookCatalog.Domain.Entities
         [DisplayName("Nationality")]
         [Required(ErrorMessage = "Please provide a Nationality")]
         [IsForForm(true)]
+        [isStringWithoutNumbers(true)]
         public string? Nationality { get; set; }
 
 

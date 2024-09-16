@@ -1,12 +1,18 @@
 ﻿@using System.Reflection
 @using SimpleBookCatalog.Domain
+@using System.ComponentModel.DataAnnotations
+
 @typeparam TModel
 
 
 <EditForm Enhance="true" method="post" autocomplete="off" Model="@Model" OnValidSubmit="@HandleFormSubmit">
+    <DataAnnotationsValidator/>
     @foreach (var property in typeof(TModel).GetProperties())
     {
         var isForForm = property.GetCustomAttribute<IsForFormAttribute>()?.IsForForm ?? false;
+        var isStringWithoutNumbers = property.GetCustomAttribute<isStringWithoutNumbers>()?.IsStringWithoutNumbers ?? false;
+        
+
         if (EditMode)
         {
             <input type="hidden" name="@GetPropertyIdName()" value="@GetPropertyIdValue()" />
@@ -14,7 +20,7 @@
 
         var displayName = property.GetCustomAttribute<DisplayNameAttribute>()?.Name ?? property.Name;
 
-        @if (IsString(property.PropertyType) && isForForm)
+        @if (IsString(property.PropertyType) && isForForm && !isStringWithoutNumbers)
         {
             <div class="mb-3">
                 <label for="@property.Name" class="form-label">
@@ -25,7 +31,30 @@
                    class="form-control shadow-none"
                    value="@GetStringValue(property)"
                    @onchange="(e) => property.SetValue(Model, e.Value)" />
-                   </div>
+                <BlazorValidationMessage FieldName="@property.Name" />
+            </div>
+
+
+    }
+        else if (IsString(property.PropertyType) && isForForm && isStringWithoutNumbers)
+        {
+            <div class="mb-3">
+                <label for="@property.Name" class="form-label">
+                    @displayName
+                </label>
+
+                <input id="@property.Name"
+                       type="text"
+                       class="form-control shadow-none"
+                       value="@GetStringValue(property)"
+                       @oninput="(e) => CheckInput(e, property)" />
+                <BlazorValidationMessage FieldName="@property.Name" />
+                @if (!string.IsNullOrEmpty(WarningMessage))
+                {
+                    
+                    <div class="text-danger">@WarningMessage</div> <!-- Displays the warning in red text -->
+                }
+            </div>
         }
         else if (IsInt(property.PropertyType) && isForForm)
         {
@@ -39,6 +68,7 @@
                        type="number"
                        value="@(GetNullableIntValue(property)?.ToString() ?? string.Empty)"
                        @oninput="(e) => SetNullableIntValue(property, string.IsNullOrEmpty(e.Value.ToString()) ? (int?)null : int.Parse(e.Value.ToString()))" />
+                <BlazorValidationMessage FieldName="@property.Name" />
 
             </div>
         }
@@ -54,6 +84,8 @@
                        step="0.01"
                        value="@(GetNullableDecimalValue(property)?.ToString() ?? string.Empty)"
                        @onchange="(e) => SetNullableDecimalValue(property, string.IsNullOrEmpty(e.Value.ToString()) ? (decimal?)null : decimal.Parse(e.Value.ToString()))" />
+                <BlazorValidationMessage FieldName="@property.Name" />
+
             </div>
         }
         else if (IsDate(property.PropertyType) && isForForm)
@@ -65,10 +97,13 @@
                        class="form-control shadow-none"
                        value="@GetDateValue(property)"
                        @onchange="(e) => HandleDateChange(e.Value.ToString(), property)" />
+                                <BlazorValidationMessage FieldName="@property.Name" />
+
             </div>
         }
         else if (IsEnum(property.PropertyType) && isForForm)
         {
+            <div class="mb-3">
             <label for="category" class="form-label">
                 @displayName
 
@@ -84,61 +119,84 @@
                     
                 }
             </select>
+                <BlazorValidationMessage FieldName="@property.Name" />
+
+            </div>
         }
-        
+        else if (IsAuthor(property.PropertyType) && FilterEligibleAuthors().Any() )
+            {
+                            <div class="mb-3">
+
+            <EditFormGenericForEntities TModel="TModel"
+                                        TItem="Author"
+                                        Model="Model"
+                                        Items="FilterEligibleAuthors()"
+                                        DisplayPropertyName="FullName"
+                                        DisplayLabelName="Authors"
+                                        DisplayPropertyNameForOptionSelect="Author"
+                                        IdChildName="AuthorId"
+            IdPropertyName="Id" />
+                <BlazorValidationMessage FieldName="AuthorId" />
+            </div>
+        }
+        else if (IsPublisher(property.PropertyType) && Publishers != null)
+        {
+                        <div class="mb-3">
+
+                <EditFormGenericForEntities TModel="TModel"
+                                            TItem="Publisher"
+                                            Model="Model"
+                                            Items="Publishers"
+                                            DisplayPropertyName="Name"
+                                            DisplayLabelName="Publishers"
+                                            DisplayPropertyNameForOptionSelect="Publisher"
+                                            IdChildName="PublisherId"
+                                            IdPropertyName="Id" />
+                <BlazorValidationMessage FieldName="PublisherId" />
+            </div>
+            
+        }
+        else if (property.Name == "GenreId" && Genres != null )
+        {
+                        <div class="mb-3">
+
+                <EditFormGenericForEntities TModel="TModel"
+                                            TItem="Genre"
+                                            Model="Model"
+                                            Items="Genres"
+                                            DisplayPropertyName="Name"
+                                            DisplayLabelName="Genres"
+                                            DisplayPropertyNameForOptionSelect="Genre"
+                                            IdChildName="GenreId"
+                                            IdPropertyName="Id" />
+
+                <BlazorValidationMessage FieldName="@property.Name" />
+            </div>
+            
+        }
+
     }
 
-    @if (FilterEligibleAuthors().Any())
-    {
-        <EditFormGenericForEntities TModel="TModel"
-                                    TItem="Author"
-                                    Model="Model"
-                                    Items="FilterEligibleAuthors()"
-                                    DisplayPropertyName="FullName"
-                                    DisplayLabelName="Authors"
-                                    DisplayPropertyNameForOptionSelect="Author"
-                                    IdChildName="AuthorId"
-                                    IdPropertyName="Id" />
-    }
 
-    @if (Publishers != null)
-    {
-        <EditFormGenericForEntities TModel="TModel"
-                                    TItem="Publisher"
-                                    Model="Model"
-                                    Items="Publishers"
-                                    DisplayPropertyName="Name"
-                                    DisplayLabelName="Publishers"
-                                    DisplayPropertyNameForOptionSelect="Publisher"
-                                    IdChildName="PublisherId"
-                                    IdPropertyName="Id" />
-    }
+    <div class="mb-3">
+        <button  class="btn btn-primary" onclick="@test">test</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="@backToList" class="btn btn-secondary shadow-none ms-3">Back to List</a>
+    </div>
 
-    @if (Genres != null)
-    {
-        <EditFormGenericForEntities TModel="TModel"
-                                    TItem="Genre"
-                                    Model="Model"
-                                    Items="Genres"
-                                    DisplayPropertyName="Name"
-                                    DisplayLabelName="Genres"
-                                    DisplayPropertyNameForOptionSelect="Genre"
-                                    IdChildName="GenreId"
-                                    IdPropertyName="Id" />
-    }
-                
-
-    <button type="button"class="btn btn-primary" onclick="@test">test</button>
-    <button type="submit" class="btn btn-primary">Submit</button>
 </EditForm>
 
-        @code {
-        [Parameter]
+@code {
+    private Timer? debounceTimer;
+
+    [Parameter]
     public TModel? Model { get; set; }
 
     [Parameter]
     public EventCallback<TModel> OnValidSubmit { get; set; }
 
+    [Parameter]
+    public string backToList{ get; set; }
 
     [Parameter] public List<Author>? Authors { get; set; }
     [Parameter] public List<Publisher>? Publishers { get; set; }
@@ -149,6 +207,7 @@
         get => (DateTime?)Model?.GetType().GetProperty(nameof(PublicationDate))?.GetValue(Model);
         set => Model?.GetType().GetProperty(nameof(PublicationDate))?.SetValue(Model, value);
     }
+    private string WarningMessage { get; set; } = string.Empty;
 
     private object selectedEnumValue;
 
@@ -159,19 +218,19 @@
 
     private bool IsInt(Type type) => type == typeof(int) || type == typeof(int?);
     private bool IsDecimal(Type type) => type == typeof(decimal) || type == typeof(decimal?);
+
+    private bool IsAuthor(Type type) => type == typeof(Author);
+    private bool IsPublisher(Type type) => type == typeof(Publisher);
+    private bool IsGenre(Type type) => type == typeof(Genre);
     private Task HandleFormSubmit()
     {
         return OnValidSubmit.InvokeAsync(Model);
     }
-    
-
-
-    public void test()
+    private void test()
     {
-        var xx = Model;
+
+        var x = Model;
     }
-
-
 
     //------------------Id getter setter------------------------
     private string GetPropertyIdName()
@@ -214,7 +273,7 @@
         var value = property.GetValue(Model);
         return value?.ToString() ?? string.Empty;
     }
-    
+
     private void SetStringValue(System.Reflection.PropertyInfo property, string value)
     {
         property.SetValue(Model, value);
@@ -282,6 +341,43 @@
                              (PublicationDate.Value.Year - author.DateOfBirth.Value.Year >= 18))
             .ToList();
     }
+
+
+    private async Task CheckInput(ChangeEventArgs e, PropertyInfo property)
+    {
+        string input = e.Value?.ToString() ?? string.Empty;
+
+        //I use a timer to check for the value if has integer inside the input
+        //Because without the timer it didnt worked
+
+        debounceTimer?.Change(Timeout.Infinite, 0); // Cancel the previous timer
+        debounceTimer = new Timer(async _ =>
+        {
+            await Task.Run(() =>
+            {
+                if (input.Any(char.IsDigit))
+                {
+                    WarningMessage = "Numbers are not allowed. The input has been cleared.";
+                    input = string.Empty; // Clear the input
+                }
+                else
+                {
+                    WarningMessage = string.Empty; // Clear the warning if input is valid
+                }
+
+                // Update the model's property value
+                property.SetValue(Model, input);
+
+                InvokeAsync(StateHasChanged); // Ensure StateHasChanged is invoked on the correct context
+            });
+        }, null, 100, Timeout.Infinite); // Debounce interval (300ms)
+
+        // Immediate update for the current input
+        property.SetValue(Model, input);
+    }
+
+
+
 
 
 }
