@@ -54,5 +54,8 @@ namespace SimpleBookCatalog.Domain.Entities
                 return $"{FirstName} {Surname}";
             }
         }
+
+        public Boolean isMock = false;
+
     }
 }

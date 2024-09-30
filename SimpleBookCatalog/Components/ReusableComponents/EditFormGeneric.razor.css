@@ -1,0 +1,80 @@
+﻿.d-flex {
+    display: flex;
+}
+
+.flex-md-row {
+    flex-direction: row;
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem;
+}
+
+.mb-8 {
+    margin-bottom: 2rem;
+}
+
+.mb-md-0 {
+    margin-bottom: 0;
+}
+
+.me-md-4 {
+    margin-right: 1.5rem;
+}
+
+.col-md-4,
+.col-md-2 {
+    flex: 1;
+}
+
+/* Adjust the tooltip-container */
+.tooltip-container {
+    display: flex; /* Keep tooltip-container as flex for icon alignment */
+    align-items: center; /* Center tooltip icon */
+    position: relative; /* Important for positioning tooltip content */
+}
+
+.label-tooltip-container {
+    display: flex; /* Use Flexbox for alignment */
+    justify-content: space-between; /* Space out items */
+    align-items: center; /* Vertically align items */
+    margin-bottom: 0.5rem; /* Space below the label */
+}
+
+.tooltip-icon {
+    cursor: pointer;
+    color: #007bff;
+    font-size: 16px;
+    margin-bottom: 0.5rem;
+}
+
+.tooltip-content {
+    display: none; /* Start as hidden */
+    position: absolute; /* Position relative to the tooltip-container */
+    bottom: 100%; /* Position it above the tooltip icon */
+    left: 50%; /* Center it under the icon */
+    transform: translateX(-50%); /* Adjust for exact centering */
+    margin-bottom: 0.5rem;
+    background-color: #333;
+    color: #fff;
+    text-align: left;
+    padding: 0.5rem;
+    border-radius: 5px;
+    z-index: 1;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0; /* Initially invisible */
+    transition: opacity 0.3s ease;
+}
+
+/* Show the tooltip on hover */
+.tooltip-icon:hover + .tooltip-content {
+    display: block; /* Change to block to show it */
+    opacity: 1; /* Make it fully visible */
+}
+
+/* Add an extra hover effect to show tooltip */
+.tooltip-container:hover .tooltip-content {
+    display: block; /* Ensure tooltip shows when hovering over the container */
+    opacity: 1; /* Make it fully visible */
+}

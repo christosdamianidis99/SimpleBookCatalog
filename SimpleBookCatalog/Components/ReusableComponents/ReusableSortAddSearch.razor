@@ -1,9 +1,17 @@
 ﻿@typeparam TSortItem where TSortItem : struct, Enum
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
-<div class="d-flex flex-column flex-md-row align-items-center mb-4">
-    <!-- Sort Dropdown -->
-    <div class="mb-2 mb-md-0 me-md-2 col-md-4">
-        <InputSelect @bind-Value="SortChoice" class="form-select me-2 col-md-12" @bind-Value:after="OnValueChanged">
+<div class="d-flex flex-md-row mb-8">
+
+    <!-- Sort Dropdown with Tooltip -->
+    <div class="mb-2 mb-md-0 me-md-4 col-md-4 tooltip-container">
+        <div class="d-flex flex-column align-items-start">
+            <i class="fas fa-question-circle tooltip-icon"></i>
+            <div class="tooltip-content">
+                Select a sorting option.
+            </div>
+        </div>
+        <InputSelect @bind-Value="SortChoice" class="form-select col-md-12" @bind-Value:after="OnValueChanged">
             <option value="">None</option>
             @foreach (var item in MyGetEnumValuesAndNames<TSortItem>())
             {
@@ -12,25 +20,39 @@
         </InputSelect>
     </div>
 
-    <!-- Search Bar -->
-    <div class="search-bar mb-2 mb-md-0 col-md-4">
+    <!-- Search Bar with Tooltip -->
+    <div class="search-bar mb-2 mb-md-0 me-md-4 col-md-4 tooltip-container">
+        <div class="d-flex flex-column align-items-start">
+            <!-- FontAwesome Icon for Search Bar -->
+            <i class="fas fa-question-circle tooltip-icon"></i>
+            <!-- Tooltip Content for Search Bar -->
+            <div class="tooltip-content">
+                Type your search query.
+            </div>
+        </div>
         <input type="text" @bind="searchQuery" @oninput="OnSearch" placeholder="Search by @SearchPlaceHolder ..." class="form-control" />
     </div>
 
-    <!-- Add New Button -->
+    <!-- Add New Button with Tooltip -->
     @if (AddNewString != null)
     {
-        <div class="col-md-2">
-            <a class="btn btn-success btn-sm p-2 w-100" type="button" href="@AddNewLink">Add new @AddNewString</a>
+        <div class="col-md-2 tooltip-container d-flex align-items-start">
+            <div class="d-flex flex-column align-items-start">
+                <!-- FontAwesome Icon for Add New Button -->
+                <i class="fas fa-question-circle tooltip-icon"></i>
+                <!-- Tooltip Content for Add New Button -->
+                <div class="tooltip-content">
+                    Click to add a new @AddNewString.
+                </div>
+            </div>
+            <a class="btn btn-success btn-sm" type="button" href="@AddNewLink">Add new @AddNewString</a>
         </div>
     }
-   
 </div>
 
 
-
-
 @code {
+
 
     [Parameter] public TSortItem? SortChoice { get; set; }
     [Parameter] public EventCallback<TSortItem?> SortChoiceChanged { get; set; }

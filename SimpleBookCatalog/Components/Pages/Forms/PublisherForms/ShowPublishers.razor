@@ -40,7 +40,9 @@
 
     private async Task LoadPublishersAsync()
     {
-        publishers = await PublisherRepository.GetAllAsyncWithAuthors();
+        var realPublishers = await PublisherRepository.GetAllAsyncWithAuthors();
+        var mockPublishers = MockPublisherData.GetMockPublishers();
+        publishers = realPublishers.Concat(mockPublishers).ToList();
     }
 
     private IEnumerable<Publisher> SortPublishersEnumerable(IEnumerable<Publisher> publishers)

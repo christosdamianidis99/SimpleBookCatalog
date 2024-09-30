@@ -1,4 +1,4 @@
-﻿<div class="book-card card shadow-sm">
+﻿<div class="book-card card shadow-sm" style="background-color: @BackgroundColor">
     <div class="card-body">
         <h5 class="card-title">@Book.Title</h5>
 
@@ -53,6 +53,10 @@
                 <p class="card-text">
                     <strong>Color:</strong> @Book.BookColors.ToString()
                 </p>
+
+                <p class="card-text">
+                    <strong>Publication date:</strong> @(Book.PublicationDate?.ToString("MMM dd, yyyy") ?? "N/A")
+                </p>
                 <p class="card-text">
                     <strong>Number of Pages:</strong> @(Book.NumberOfPages?.ToString() ?? "N/A")
                 </p>
@@ -85,15 +89,21 @@
 
 
     </div>
-    <div class="card-footer text-end">
-        <a href="@($"/edit-book/{Book.Id}")" class="btn btn-primary me-2">Edit</a>
-        <a href="@($"/confirm-delete-book/{Book.Id}")" class="btn btn-secondary">Delete</a>
-    </div>
+    @if(!Book.isMock)
+    {
+        <div class="card-footer text-end">
+            <a href="@($"/edit-book/{Book.Id}")" class="btn btn-primary me-2">Edit</a>
+            <a href="@($"/confirm-delete-book/{Book.Id}")" class="btn btn-secondary">Delete</a>
+        </div>
+    }
+    
 </div>
 
 @code {
     [Parameter]
     public required Book Book { get; set; }
+    [Parameter] public string BackgroundColor { get; set; } = "#ffffff"; // Default white background
+
 
     private bool isCollapsed=true;
 

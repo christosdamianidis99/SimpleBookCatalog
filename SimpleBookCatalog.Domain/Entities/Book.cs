@@ -107,6 +107,6 @@ namespace SimpleBookCatalog.Domain.Entities
 
         public Publisher? Publisher { get; set; }
 
-
+        public Boolean isMock = false;
     }
 }

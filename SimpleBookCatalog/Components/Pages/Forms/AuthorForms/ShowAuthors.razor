@@ -41,7 +41,11 @@
 
     private async Task LoadAuthorsAsync()
     {
-        authors = await AuthorRepository.GetAllAsyncWithPublishers();
+        var realAuthor = await AuthorRepository.GetAllAsyncWithPublishers();
+        var mockAuthors =  MockAuthorData.GetMockAuthors();
+
+        authors = realAuthor.Concat(mockAuthors).ToList();
+        //authors = await AuthorRepository.GetAllAsyncWithPublishers();
     }
 
     private IEnumerable<Author> SortAuthorsEnumerable(IEnumerable<Author> authors)

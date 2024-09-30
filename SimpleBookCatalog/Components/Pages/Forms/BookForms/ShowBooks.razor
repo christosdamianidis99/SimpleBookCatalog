@@ -1,5 +1,6 @@
 ﻿@page "/show-books"
 @inject IBookRepository BookRepository
+@inject IGenreRepository GenreRepository
 
 @using SimpleBookCatalog.Components.ReusableComponents
 
@@ -35,6 +36,9 @@
     private List<Book> books = new List<Book>();
     private string? searchQuery { get; set; }
     private IEnumerable<Book>? filteredBooks;
+    // Mock authors, genres, and publishers to use in mock data
+    private List<Author> mockAuthors = MockAuthorData.GetMockAuthors();
+    private List<Publisher> mockPublishers = MockPublisherData.GetMockPublishers();
 
     protected override async Task OnInitializedAsync()
     {
@@ -43,7 +47,17 @@
 
     private async Task LoadBooksAsync()
     {
-        books = await BookRepository.GetAllAsync();
+        // Get real books from the database or API
+        var realBooks = await BookRepository.GetAllAsync();
+        var mockGenres = await GenreRepository.GetAllAsync();
+        // Get mock books
+        var mockBooks = MockBookData.GetMockBooks(mockAuthors, mockGenres, mockPublishers);
+
+        // Combine real and mock books
+        books = realBooks.Concat(mockBooks).ToList();
+
+        // Optionally apply sorting or filtering logic if needed
+        filteredBooks = SortBooksEnumerable(books);
     }
 
     private IEnumerable<Book> SortBooksEnumerable(IEnumerable<Book> books)
@@ -98,28 +112,4 @@
             filteredBooks = books.Where(b => CommonMechanics.SearchGeneric(b, searchQuery));
         }
     }
-
-
-
-
-    //private int sortChoice = 0;
-    @*
-       private async Task OnSortChanged(ChangeEventArgs e)
-    {
-        sortChoice = int.Parse(e.Value.ToString() ?? "0");
-        await Task.CompletedTask;
-    }
-
-    private IEnumerable<(int Value, string Text)> GetSortOptions()
-    {
-        return Enum.GetValues(typeof(SortTypeBooks)).Cast<SortTypeBooks>()
-            .Select(sort => ((int)sort, sort.ToString()));
-    }
-
-        private bool searchBook(Book? book, string search)
-    {
-        //return searchGeneric(book, search);
-        return book?.Title?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false;
-    }
-    *@
 }

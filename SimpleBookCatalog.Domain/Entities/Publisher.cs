@@ -30,6 +30,9 @@ namespace SimpleBookCatalog.Domain.Entities
         public string? Website { get; set; }
 
         public ICollection<Book>? Books { get; set; }
+
+        public Boolean isMock = false;
+
     }
 
 }

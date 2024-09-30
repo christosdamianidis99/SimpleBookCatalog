@@ -1,0 +1,80 @@
+﻿/* Flex Container for Aligning Components */
+.d-flex {
+    display: flex;
+}
+
+.flex-md-row {
+    flex-direction: row;
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem; /* Adjust space between rows */
+}
+
+.mb-8 {
+    margin-bottom: 2rem; /* Adjust space between rows */
+}
+.mb-md-0 {
+    margin-bottom: 0;
+}
+
+.me-md-4 {
+    margin-right: 1.5rem; /* Increase space between components */
+}
+
+.col-md-4,
+.col-md-2 {
+    flex: 1; /* Ensure proper flex basis for alignment */
+}
+
+/* Tooltip Container */
+.tooltip-container {
+    position: relative;
+    display: flex;
+    flex-direction: column; /* Arrange icon and component in a column */
+    align-items: flex-start;
+}
+
+/* Tooltip Icon */
+.tooltip-icon {
+    cursor: pointer;
+    color: #007bff;
+    font-size: 16px;
+    margin-bottom: 0.5rem; /* Space between icon and component */
+}
+
+/* Tooltip Content */
+.tooltip-content {
+    display: none;
+    position: absolute;
+    bottom: 100%; /* Position tooltip above the component */
+    left: 0; /* Align tooltip to the start (left) of the container */
+    margin-bottom: 0.5rem; /* Space between tooltip and component */
+    background-color: #333;
+    color: #fff;
+    text-align: left;
+    padding: 0.5rem;
+    border-radius: 5px;
+    z-index: 1;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    max-width: 200px; /* Adjust width as needed */
+}
+
+/* Show Tooltip Only on Icon Hover */
+.tooltip-icon:hover + .tooltip-content {
+    display: block;
+    opacity: 1;
+}
+
+/* Button Styling */
+.btn-sm {
+    padding: 0.5rem 1rem; /* Adjust padding to make the button smaller */
+    font-size: 0.875rem; /* Adjust font size if needed */
+    display: inline-flex; /* Make button width wrap to its content */
+    align-items: center;
+    margin-top: 0; /* Remove top margin if needed */
+    white-space: nowrap;
+}

@@ -54,10 +54,14 @@
     </div>
 
     <!-- Card Footer with Action Buttons -->
-    <div class="card-footer text-end">
-        <a href="@($"/edit-publisher/{Publisher.Id}")" class="btn btn-primary me-2">Edit</a>
-        <a href="@($"/confirm-delete-publisher/{Publisher.Id}")" class="btn btn-danger">Delete</a>
-    </div>
+    @if (!Publisher.isMock)
+    {
+        <div class="card-footer text-end">
+            <a href="@($"/edit-publisher/{Publisher.Id}")" class="btn btn-primary me-2">Edit</a>
+            <a href="@($"/confirm-delete-publisher/{Publisher.Id}")" class="btn btn-danger">Delete</a>
+        </div>
+    }
+
 </div>
 
 @code {

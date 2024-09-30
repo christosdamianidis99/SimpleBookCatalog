@@ -1,12 +1,21 @@
 ﻿@using System.Reflection
 @using SimpleBookCatalog.Domain
 @using System.ComponentModel.DataAnnotations
-
+@using SimpleBookCatalog.Components.ReusableComponents
 @typeparam TModel
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
 
-<EditForm Enhance="true" method="post" autocomplete="off" Model="@Model" OnValidSubmit="@HandleFormSubmit">
+
+
+@{
+   <EditForm Enhance="true" method="post" autocomplete="off" Model="@Model" OnValidSubmit="@HandleFormSubmit">
+
+      
+      
+            
     <DataAnnotationsValidator/>
+
     @foreach (var property in typeof(TModel).GetProperties())
     {
         var isForForm = property.GetCustomAttribute<IsForFormAttribute>()?.IsForForm ?? false;
@@ -22,10 +31,19 @@
 
         @if (IsString(property.PropertyType) && isForForm && !isStringWithoutNumbers)
         {
-            <div class="mb-3">
-                <label for="@property.Name" class="form-label">
-                    @displayName
-            </label>
+
+                <div class="mb-3">
+                    <div class="label-tooltip-container">
+                        <label for="@property.Name" class="form-label">
+                            @displayName
+                        </label>
+                        <div class="tooltip-container">
+                            <i class="fas fa-question-circle tooltip-icon"></i>
+                            <div class="tooltip-content">
+                                Fill the @displayName
+                            </div>
+                        </div>
+                    </div>
             <input id="@property.Name"
                    type="text"
                    class="form-control shadow-none"
@@ -38,10 +56,18 @@
     }
         else if (IsString(property.PropertyType) && isForForm && isStringWithoutNumbers)
         {
-            <div class="mb-3">
-                <label for="@property.Name" class="form-label">
-                    @displayName
-                </label>
+                <div class="mb-3">
+                    <div class="label-tooltip-container">
+                        <label for="@property.Name" class="form-label">
+                            @displayName
+                        </label>
+                        <div class="tooltip-container">
+                            <i class="fas fa-question-circle tooltip-icon"></i>
+                            <div class="tooltip-content">
+                                Fill the @displayName
+                            </div>
+                        </div>
+                    </div>
 
                 <input id="@property.Name"
                        type="text"
@@ -58,10 +84,18 @@
         }
         else if (IsInt(property.PropertyType) && isForForm)
         {
-            <div class="mb-3">
-            <label for="@property.Name" class="form-label">
-                    @displayName
-                </label>
+                <div class="mb-3">
+                    <div class="label-tooltip-container">
+                        <label for="@property.Name" class="form-label">
+                            @displayName
+                        </label>
+                        <div class="tooltip-container">
+                            <i class="fas fa-question-circle tooltip-icon"></i>
+                            <div class="tooltip-content">
+                                Fill the @displayName
+                            </div>
+                        </div>
+                    </div>
 
                 <input id="@property.Name"
                        class="form-control shadow-none"
@@ -74,10 +108,22 @@
         }
         else if (IsDecimal(property.PropertyType) && isForForm)
         {
-            <div class="mb-3">
-                <label for="@property.Name" class="form-label">
-                    @displayName
-                </label>
+
+
+
+                <div class="mb-3">
+                    <div class="label-tooltip-container">
+                        <label for="@property.Name" class="form-label">
+                            @displayName
+                        </label>
+                        <div class="tooltip-container">
+                            <i class="fas fa-question-circle tooltip-icon"></i>
+                            <div class="tooltip-content">
+                                Fill the @displayName
+                            </div>
+                        </div>
+                    </div>
+
                 <input id="@property.Name"
                        class="form-control shadow-none"
                        type="number"
@@ -90,8 +136,18 @@
         }
         else if (IsDate(property.PropertyType) && isForForm)
         {
-            <div class="mb-3">
-                <label for="@property.Name" class="form-label">@displayName</label>
+                <div class="mb-3">
+                    <div class="label-tooltip-container">
+                        <label for="@property.Name" class="form-label">
+                            @displayName
+                        </label>
+                        <div class="tooltip-container">
+                            <i class="fas fa-question-circle tooltip-icon"></i>
+                            <div class="tooltip-content">
+                                Fill the @displayName
+                            </div>
+                        </div>
+                    </div>
                 <input id="@property.Name"
                        type="date"
                        class="form-control shadow-none"
@@ -103,11 +159,18 @@
         }
         else if (IsEnum(property.PropertyType) && isForForm)
         {
-            <div class="mb-3">
-            <label for="category" class="form-label">
-                @displayName
-
-            </label>
+                <div class="mb-3">
+                    <div class="label-tooltip-container">
+                        <label for="@property.Name" class="form-label">
+                            @displayName
+                        </label>
+                        <div class="tooltip-container">
+                            <i class="fas fa-question-circle tooltip-icon"></i>
+                            <div class="tooltip-content">
+                                Fill the @displayName
+                            </div>
+                        </div>
+                    </div>
             <select id="@property.Name"
                          class="form-control shadow-none"
                          value="@GetEnumValue(property)"
@@ -185,6 +248,7 @@
 
 </EditForm>
 
+}
 @code {
     private Timer? debounceTimer;
 
