@@ -1,55 +1,69 @@
 ﻿/* General Page Styles */
 .publishers-page {
-    padding: 20px;
+    padding: 40px; /* Spacious padding for a clean layout */
+    font-family: 'Arial', sans-serif; /* Modern sans-serif font for readability */
+    background-color: #f9f9f9; /* Soft light gray for a contemporary backdrop */
+    border-radius: 10px; /* Rounded corners for a friendly feel */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
+/* Publisher Title Styling */
 .publisher-title {
-    font-size: 2rem;
-    margin-bottom: 20px;
+    font-size: 2.5rem; /* Larger title for emphasis */
     text-align: center;
+    margin-bottom: 40px;
+    color: #333; /* Dark gray for better readability */
+    letter-spacing: 0.5px; /* Slight letter spacing for elegance */
 }
 
 /* Publisher Card Styles */
 .publisher-card {
-    width: 100%;
-    border-radius: 10px;
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
+    display: flex; /* Flexbox for modern layout */
+    flex-direction: column; /* Column orientation for card content */
+    border-radius: 15px; /* Smooth rounded corners */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff; /* Clean white background */
+    margin-bottom: 20px; /* Space between cards */
 }
 
+    /* Hover Effect for Publisher Card */
     .publisher-card:hover {
-        transform: scale(1.02);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        transform: translateY(-3px); /* Lift effect on hover */
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
     }
 
 /* Card Body */
 .card-body {
-    padding: 20px;
+    padding: 25px; /* Generous padding for a modern feel */
 }
 
 /* Publisher Name */
 .publisher-name {
-    font-size: 1.75rem;
+    font-size: 2rem; /* Larger font for publisher name */
     font-weight: bold;
-    color: #343a40;
-    margin-bottom: 20px;
+    color: #2c3e50; /* Dark blue-gray for a professional look */
+    margin-bottom: 15px; /* Space below name */
+    text-align: center; /* Centered alignment for name */
 }
 
 /* Publisher Details */
 .publisher-details p {
-    margin-bottom: 10px;
-    font-size: 1rem;
-    color: #6c757d;
+    margin-bottom: 12px; /* Space between details */
+    font-size: 1.1rem; /* Slightly larger font for readability */
+    color: #34495e; /* Medium blue-gray for details */
 }
 
-/* Books Section */
+/* Books Section Title */
 .books-title {
-    margin-top: 20px;
-    font-size: 1.25rem;
-    color: #495057;
+    margin-top: 30px; /* Space above the section title */
+    font-size: 1.5rem; /* Larger title for the books section */
+    color: #34495e; /* Dark blue-gray for section title */
+    text-align: center; /* Centered title */
+    font-weight: bold; /* Emphasis on section title */
 }
 
+/* Books List Styling */
 .books-list {
     padding-left: 0;
     list-style: none;
@@ -58,41 +72,50 @@
 
 .book-item {
     padding: 15px;
-    background-color: #f8f9fa;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    border: 1px solid #dee2e6;
+    background-color: #ecf0f1; /* Light background for book items */
+    margin-bottom: 15px; /* Space between items */
+    border-radius: 10px; /* Softly rounded corners */
+    border: 1px solid #bdc3c7; /* Light gray border for definition */
+    transition: background-color 0.3s ease; /* Transition for hover effect */
 }
+
+    .book-item:hover {
+        background-color: #dcdfe1; /* Slightly darker background on hover */
+    }
 
 /* Card Footer */
 .card-footer {
-    background-color: #f1f1f1;
-    padding: 10px;
+    background-color: #f8f9fa; /* Light gray footer */
+    padding: 15px; /* Increased padding */
     text-align: right;
 }
 
+    /* Button Styles */
     .card-footer .btn {
         border-radius: 5px;
         padding: 10px 20px;
-        font-size: 0.9rem;
+        font-size: 1rem;
+        transition: background-color 0.3s ease; /* Smooth transition */
     }
 
     .card-footer .btn-primary {
-        background-color: #007bff;
+        background-color: #007bff; /* Primary button color */
         border: none;
+        color: white; /* White text for contrast */
     }
 
         .card-footer .btn-primary:hover {
-            background-color: #0056b3;
+            background-color: #0056b3; /* Darker blue on hover */
         }
 
     .card-footer .btn-danger {
-        background-color: #dc3545;
+        background-color: #dc3545; /* Danger button color */
         border: none;
+        color: white; /* White text for contrast */
     }
 
         .card-footer .btn-danger:hover {
-            background-color: #c82333;
+            background-color: #c82333; /* Darker red on hover */
         }
 
 /* Ensure no unwanted padding in columns */
@@ -104,4 +127,19 @@
 /* Prevent card overflow */
 .container .card {
     max-width: 100%;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .publisher-title {
+        font-size: 2rem; /* Adjust font size for mobile */
+    }
+
+    .publisher-name {
+        font-size: 1.5rem; /* Adjust font size for publisher name */
+    }
+
+    .book-item {
+        padding: 10px; /* Less padding on mobile for better fit */
+    }
 }

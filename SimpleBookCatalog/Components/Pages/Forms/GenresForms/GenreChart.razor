@@ -1,4 +1,4 @@
-﻿@page "/charts"
+﻿@page "/genre-chart"
 @using ChartJs.Blazor.BarChart
 @using ChartJs.Blazor.Common
 @using ChartJs.Blazor.Common.Enums
@@ -8,6 +8,7 @@
 @inject IGenreRepository GenrerRepository
 @inject IAuthorRepository AuthorRepository
 
+<h1>Genre Chart</h1>
 <Chart Config="GenreConfig"></Chart>
 
 <Chart Config="AuthorConfig" @ref="_chart"></Chart>

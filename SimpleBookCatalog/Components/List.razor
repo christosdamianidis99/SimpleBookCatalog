@@ -3,11 +3,10 @@
 @inject IGenreRepository GenreRepository
 @using SimpleBookCatalog.Components.ReusableComponents
 @using SimpleBookCatalog.Components.Pages.Forms.BookForms
-
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-<PageTitle>Book List</PageTitle>
-<h1 class="row justify-content-center">Book List</h1>
+<PageTitle >Book List</PageTitle>
+<h1 class="row justify-content-center">Bookcase</h1>
 <div class="shelf"></div>
 <!-- Bookshelf grid layout -->
 <div class="book-grid">
@@ -20,7 +19,7 @@
                 <div class="book-author">by @(book.Author?.FullName??"N/A")</div>
                 <div class="book-publisher">@(book.Publisher?.Name??"N/A")</div>
                 <div class="book-pages">@(book.NumberOfPages??0) pages</div>
-                <div class="book-price">@(book.Price.ToString()??"N/A")</div>
+                <div class="book-price">@(book.Price?.ToString("C")??"N/A")</div>
             </div>
         </div>
     }
@@ -72,8 +71,8 @@
 
 
     // Mock authors, genres, and publishers to use in mock data
-    private List<Author> mockAuthors = MockAuthorData.GetMockAuthors();
-    private List<Publisher> mockPublishers = MockPublisherData.GetMockPublishers();
+    private List<Author> mockAuthors = new List<Author>();
+    private List<Publisher> mockPublishers = new List<Publisher>();
 
 
     protected override async Task OnInitializedAsync()
@@ -84,12 +83,17 @@
 
     private async Task LoadBooksAsync()
     {
-        // Get real books from the database or API
         var realBooks = await BookRepository.GetAllAsync();
         var mockGenres = await GenreRepository.GetAllAsync();
+
+        mockAuthors = MockAuthorData.GetMockAuthors();
+        mockPublishers = MockPublisherData.GetMockPublishers();
+
+
         // Get mock books
         var mockBooks = MockBookData.GetMockBooks(mockAuthors, mockGenres, mockPublishers);
 
+        mockBooks = MockBookData.LinkBooksToAuthorsAndPublishers(mockBooks, mockAuthors, mockPublishers);
         // Combine real and mock books
         books = realBooks.Concat(mockBooks).ToList();
 

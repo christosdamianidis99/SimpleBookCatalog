@@ -1,5 +1,7 @@
 ﻿@page "/show-authors"
 @inject IAuthorRepository AuthorRepository
+@inject IBookRepository BookRepository
+@inject IGenreRepository GenreRepository
 @using SimpleBookCatalog.Components.ReusableComponents
 
 <div class="authors-page container">
@@ -30,6 +32,13 @@
     [Parameter] public SortTypeAuthors? SortChoice { get; set; }
 
     public static List<Author> authors = new List<Author>();
+
+
+    private List<Author> mockAuthors = new List<Author>();
+    private List<Publisher> mockPublishers = new List<Publisher>();
+
+
+    public static List<Book> books = new List<Book>();  
     private string searchQuery = string.Empty;
     private IEnumerable<Author>? filteredAuthors;
 
@@ -41,11 +50,24 @@
 
     private async Task LoadAuthorsAsync()
     {
+        var mockGenres = await GenreRepository.GetAllAsync();
+        var realBooks = await BookRepository.GetAllAsync();
+
+        mockAuthors = MockAuthorData.GetMockAuthors();
+        mockPublishers = MockPublisherData.GetMockPublishers();
+
+        // Get mock books
+        var mockBooks = MockBookData.GetMockBooks(mockAuthors, mockGenres, mockPublishers);
+        mockBooks = MockBookData.LinkBooksToAuthorsAndPublishers(mockBooks, mockAuthors, mockPublishers);
+
+
+        // Combine real and mock books
+        books = realBooks.Concat(mockBooks).ToList();
+
         var realAuthor = await AuthorRepository.GetAllAsyncWithPublishers();
-        var mockAuthors =  MockAuthorData.GetMockAuthors();
+
 
         authors = realAuthor.Concat(mockAuthors).ToList();
-        //authors = await AuthorRepository.GetAllAsyncWithPublishers();
     }
 
     private IEnumerable<Author> SortAuthorsEnumerable(IEnumerable<Author> authors)

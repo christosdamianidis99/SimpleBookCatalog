@@ -1,98 +1,164 @@
-﻿.card-body
-{
-    background-color:white;
-}
-/* General Container Styles */
-.genrer-page {
-    margin-top: 2rem; /* Space above the page content */
+﻿/* General Container Styles */
+.genre-page {
+    margin-top: 2rem;
+    padding: 40px;
+    font-family: 'Arial', sans-serif; /* Modern sans-serif font */
+    background-color: #f4f4f4; /* Light gray background for a modern feel */
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
-.genrer-title {
-    font-size: 2rem;
-    margin-bottom: 20px;
+/* Genre Title Styling */
+.genre-title {
+    font-size: 2.5rem;
     text-align: center;
+    margin-bottom: 30px;
+    color: #333; /* Dark gray for better readability */
+    border-bottom: 2px solid #ddd; /* Underline for emphasis */
+    padding-bottom: 10px;
+    letter-spacing: 0.5px; /* Slight spacing for elegance */
 }
 
 /* Sort Container Styles */
 .sort-container {
-    max-width: 300px; /* Limit the width of the sort container */
+    max-width: 350px; /* Slightly larger for better usability */
+    margin: 0 auto 1.5rem; /* Centered alignment */
 }
 
     .sort-container .form-label {
-        font-size: 1rem; /* Font size for the label */
-        font-weight: bold; /* Bold text */
+        font-size: 1.1rem;
+        font-weight: 500; /* Medium weight for better visibility */
+        color: #555; /* Darker gray for readability */
+        display: block; /* Ensures proper spacing */
+        margin-bottom: 5px; /* Space between label and input */
     }
 
     .sort-container .form-select {
-        font-size: 1rem; /* Font size for the select element */
-        padding: 0.5rem; /* Padding inside the select box */
-        border: 1px solid #ced4da; /* Border color */
-        border-radius: 0.25rem; /* Rounded corners */
+        font-size: 1.1rem;
+        padding: 0.75rem; /* More padding for better interaction */
+        border: 1px solid #ccc; /* Soft border */
+        border-radius: 5px;
+        background-color: #fff; /* White background */
+        color: #333; /* Dark gray for readability */
+        transition: border 0.3s ease, box-shadow 0.3s ease;
     }
+
+        .sort-container .form-select:focus {
+            border-color: #007bff; /* Highlight border when focused */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Focused shadow */
+        }
 
 /* Alert Styles */
 .alert-info {
-    background-color: #e9f5f9; /* Light blue background for info alert */
-    color: #0056b3; /* Dark blue text for info alert */
+    background-color: #e3f2fd; /* Light blue for info alert */
+    color: #1e88e5; /* Darker blue for info text */
+    padding: 1rem;
+    border-radius: 5px;
+    margin-bottom: 1.5rem;
 }
 
 .alert-warning {
-    background-color: #fff3cd; /* Light yellow background for warning alert */
-    color: #856404; /* Dark yellow text for warning alert */
+    background-color: #fff9c4; /* Light yellow for warning alert */
+    color: #f57f17; /* Dark yellow text */
+    padding: 1rem;
+    border-radius: 5px;
+    margin-bottom: 1.5rem;
 }
 
 /* Genre Card Styles */
 .genre-card {
-    border: 1px solid #dee2e6; /* Light border color */
-    border-radius: 0.5rem; /* Rounded corners */
-    background-color: #ffffff; /* White background */
-    overflow: hidden; /* Ensure content stays within the card */
-    transition: box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+    border: 1px solid #e0e0e0; /* Soft light border */
+    border-radius: 8px; /* Slightly rounded corners */
+    background-color: #ffffff; /* White for a clean look */
+    overflow: hidden;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    padding: 15px;
+    margin-bottom: 1.5rem;
+    display: flex; /* Enable flexbox for internal layout */
+    flex-direction: column; /* Column layout for card content */
 }
 
-    .genre-card:hover {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow on hover */
-        transform: translateY(-5px); /* Lift the card up on hover */
-    }
-
-    /* Genre Card Body Styles */
+    /* Genre Card Body */
     .genre-card .card-body {
-        padding: 1.25rem; /* Padding inside the card */
+        padding: 1rem;
+        display: flex;
+        flex-direction: column; /* Ensure vertical stacking */
     }
 
+/* Genre Name Styling */
 .genre-name {
-    font-size: 1.5rem; /* Larger font size for the genre name */
-    font-weight: bold; /* Bold text */
-    color: #343a40; /* Dark gray color for the genre name */
-}
-
-.books-title {
-    font-size: 1.25rem; /* Font size for the books title */
-    color: #6c757d; /* Muted gray color */
-    margin-bottom: 1rem; /* Space below the books title */
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #333; /* Dark gray for genre name */
+    text-align: center;
+    margin-bottom: 1rem;
+    text-transform: capitalize; /* Capitalize genre names */
 }
 
 /* Books List Styles */
 .books-list {
     list-style: none; /* Remove default list styles */
     padding: 0; /* Remove padding */
+    display: flex;
+    flex-direction: column; /* Vertical layout for book items */
 }
 
 .book-item {
-    border-bottom: 1px solid #dee2e6; /* Border between items */
-    padding: 0.75rem 0; /* Padding inside each item */
+    border-bottom: 1px solid #e0e0e0; /* Subtle border between items */
+    padding: 1rem 0;
+    font-size: 1.1rem; /* Slightly larger font for readability */
 }
 
     .book-item:last-child {
         border-bottom: none; /* Remove border from the last item */
     }
 
-    .book-item strong {
-        display: block; /* Ensure labels are on separate lines */
-        margin-bottom: 0.25rem; /* Space below each label */
-        color: #495057; /* Dark gray color for labels */
+.book-item-title {
+    font-weight: 600; /* Semi-bold for titles */
+    color: #007bff; /* Bright blue for book titles */
+}
+
+.book-item-author {
+    color: #666; /* Lighter gray for authors */
+    font-style: italic; /* Italic for additional emphasis */
+}
+
+/* Genre Specific Backgrounds */
+.genre-card.fantasy {
+    background-image: url('/images/fantasy-pattern.jpg');
+    background-size: cover;
+    color: #fff; /* White text for contrast */
+}
+
+.genre-card.mystery {
+    background-image: url('/images/mystery-pattern.jpg');
+    background-size: cover;
+    color: #fff; /* White text for contrast */
+}
+
+.genre-card.scifi {
+    background-image: url('/images/scifi-pattern.jpg');
+    background-size: cover;
+    color: #fff; /* White text for contrast */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .genre-title {
+        font-size: 2rem;
+        margin-bottom: 20px;
     }
 
-    .book-item br {
-        display: none; /* Remove line breaks, use margin instead */
+    .sort-container {
+        max-width: 100%; /* Stretch full width on small screens */
     }
+
+    .book-item {
+        flex-direction: column; /* Stack titles and authors */
+        align-items: flex-start;
+    }
+
+    .book-item-title, .book-item-author {
+        margin-bottom: 0.5rem;
+    }
+}

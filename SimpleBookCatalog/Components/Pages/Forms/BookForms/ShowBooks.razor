@@ -36,9 +36,8 @@
     private List<Book> books = new List<Book>();
     private string? searchQuery { get; set; }
     private IEnumerable<Book>? filteredBooks;
-    // Mock authors, genres, and publishers to use in mock data
-    private List<Author> mockAuthors = MockAuthorData.GetMockAuthors();
-    private List<Publisher> mockPublishers = MockPublisherData.GetMockPublishers();
+    private List<Author> mockAuthors = new List<Author>();
+    private List<Publisher> mockPublishers = new List<Publisher>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -50,9 +49,16 @@
         // Get real books from the database or API
         var realBooks = await BookRepository.GetAllAsync();
         var mockGenres = await GenreRepository.GetAllAsync();
+
+        mockAuthors = MockAuthorData.GetMockAuthors();
+        mockPublishers = MockPublisherData.GetMockPublishers();
+
+
         // Get mock books
         var mockBooks = MockBookData.GetMockBooks(mockAuthors, mockGenres, mockPublishers);
+        mockBooks = MockBookData.LinkBooksToAuthorsAndPublishers(mockBooks, mockAuthors, mockPublishers);
 
+        
         // Combine real and mock books
         books = realBooks.Concat(mockBooks).ToList();
 

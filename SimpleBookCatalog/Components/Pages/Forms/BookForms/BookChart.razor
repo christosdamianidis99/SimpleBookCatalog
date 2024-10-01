@@ -1,0 +1,168 @@
+﻿@page "/book-chart"
+@using ChartJs.Blazor.BarChart
+@using ChartJs.Blazor.Common
+@using ChartJs.Blazor.Common.Enums
+@using ChartJs.Blazor.PieChart
+@using ChartJs.Blazor.Util
+@inject SimpleBookCatalogDbContext DbContext
+@inject IGenreRepository GenreRepository
+@inject IAuthorRepository AuthorRepository
+@inject IBookRepository BookRepository
+<div>
+<Chart Config="BookColorsConfig"></Chart>
+</div>
+
+<div>
+<Chart Config="BookLaaguageConfig"></Chart>
+</div>
+@code {
+
+    private PieConfig BookColorsConfig = new(true)
+        {
+            Options = new PieOptions
+            {
+                Responsive = true,
+                Title = new OptionsTitle
+                {
+                    Display = true,
+                    Text = "Book colors"
+                }
+            }
+        };
+
+    private PieConfig BookLaaguageConfig = new(true)
+        {
+            Options = new PieOptions
+            {
+                Responsive = true,
+                Title = new OptionsTitle
+                {
+                    Display = true,
+                    Text = "Book languages"
+                }
+            }
+        };
+
+    private const int InitalCount = 7;
+    private Chart? _chart;
+
+    public static List<Author> Authors = new List<Author>();
+
+
+    private List<Author> mockAuthors = new List<Author>();
+    private List<Publisher> mockPublishers = new List<Publisher>();
+    public static List<Book> books = new List<Book>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+
+        var mockGenres = await GenreRepository.GetAllAsync();
+        var realBooks = await BookRepository.GetAllAsync();
+
+
+        mockAuthors = MockAuthorData.GetMockAuthors();
+        mockPublishers = MockPublisherData.GetMockPublishers();
+
+        // Get mock books
+        var mockBooks = MockBookData.GetMockBooks(mockAuthors, mockGenres, mockPublishers);
+        mockBooks = MockBookData.LinkBooksToAuthorsAndPublishers(mockBooks, mockAuthors, mockPublishers);
+
+
+        // Combine real and mock books
+        books = realBooks.Concat(mockBooks).ToList();
+
+        var realAuthor = await AuthorRepository.GetAllAsyncWithPublishers();
+
+
+        Authors = realAuthor.Concat(mockAuthors).ToList();
+
+        MakeBooksPie();
+        MakeBookLanguagePie();
+    }
+
+    private void MakeBooksPie()
+    {
+        // Dictionary to map BookColors enum to actual color strings
+        Dictionary<BookColors, string> colorMap = new Dictionary<BookColors, string>
+    {
+        { BookColors.Red, "#FF0000" },        // Red
+        { BookColors.Green, "#008000" },      // Green
+        { BookColors.Black, "#000000" },      // Black
+        { BookColors.White, "#FFFFFF" },      // White
+        { BookColors.Purple, "#800080" },     // Purple
+        { BookColors.Orange, "#FFA500" },     // Orange
+        { BookColors.Ciel, "#87CEEB" },       // Sky blue
+        { BookColors.Babypink, "#F4C2C2" },   // Baby pink
+        { BookColors.NavyBlue, "#000080" }    // Navy blue
+    };
+
+        // Group books by BookColors and count occurrences of each color
+        var bookColorGroups = books
+            .GroupBy(b => b.BookColors)
+            .ToDictionary(g => g.Key, g => g.Count());
+
+        // Clear the existing labels before adding new ones
+        BookColorsConfig.Data.Labels.Clear();
+
+        // Add labels (unique book colors)
+        foreach (var color in bookColorGroups.Keys)
+        {
+            BookColorsConfig.Data.Labels.Add(color.ToString());
+        }
+
+        // Create dataset with counts and corresponding colors
+        PieDataset<int> dataset = new PieDataset<int>(bookColorGroups.Values.ToList(), true)
+            {
+                BackgroundColor = bookColorGroups
+                    .Select(g => colorMap[g.Key]) // Get the color string for each BookColor
+                    .ToArray()
+            };
+
+        // Add dataset to the chart config
+        BookColorsConfig.Data.Datasets.Add(dataset);
+    }
+
+    private void MakeBookLanguagePie()
+    {
+
+        var bookLanguagesGroups = books.GroupBy(b => b.Language)
+        .ToDictionary(g => g.Key, g => g.Count());
+
+        BookLaaguageConfig.Data.Labels.Clear();
+
+        foreach (var lang in bookLanguagesGroups)
+        {
+            BookLaaguageConfig.Data.Labels.Add(lang.Key.ToString());
+        }
+
+        PieDataset<int> dataset = new PieDataset<int>(bookLanguagesGroups.Values.ToList(), true)
+            {
+                BackgroundColor = new[]
+                        {
+                    ColorUtil.RandomColorString(),
+                    ColorUtil.RandomColorString(),
+                    ColorUtil.RandomColorString(),
+                    ColorUtil.RandomColorString(),
+                    ColorUtil.RandomColorString(),
+                    ColorUtil.RandomColorString(),
+                    ColorUtil.RandomColorString(),
+        }
+            };
+
+            BookLaaguageConfig.Data.Datasets.Add(dataset);
+    }
+
+
+    // Helper method to generate an array of unique random colors
+    private string[] GenerateColorArray(int count)
+    {
+        var colors = new string[count];
+        for (int i = 0; i < count; i++)
+        {
+            colors[i] = ColorUtil.RandomColorString(); // Use your method to generate random colors
+        }
+        return colors;
+    }
+}

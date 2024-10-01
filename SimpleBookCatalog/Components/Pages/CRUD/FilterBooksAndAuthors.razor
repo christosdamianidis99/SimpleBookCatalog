@@ -5,33 +5,33 @@
 @inject IGenreRepository GenreRepository
 @using SimpleBookCatalog.Components.Pages.Forms.BookForms
 
-<h3>Filter</h3>
+<h3 class="filter-title">Filter</h3>
 
 <!-- Filter Form -->
-<div class="filter-form mb-4">
+<div class="filter-form">
     <!-- Books Filters Section -->
-    <div class="mb-4">
+    <div class="filter-section">
         <h5>Books Filters</h5>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="inputStartValuePage" class="form-label">Pages greater than:</label>
-                <InputNumber id="inputStartValuePage" class="form-control" @bind-Value="pagesGreater"></InputNumber>
+        <div class="filter-row">
+            <div class="filter-item">
+                <label for="inputStartValuePage">Pages greater than:</label>
+                <InputNumber id="inputStartValuePage" @bind-Value="pagesGreater" />
             </div>
-            <div class="col-md-6 mb-3">
-                <label for="inputEndValuePage" class="form-label">Pages less than:</label>
-                <InputNumber id="inputEndValuePage" class="form-control" @bind-Value="pagesLess"></InputNumber>
+            <div class="filter-item">
+                <label for="inputEndValuePage">Pages less than:</label>
+                <InputNumber id="inputEndValuePage" @bind-Value="pagesLess" />
             </div>
-            <div class="col-md-6 mb-3">
-                <label for="inputStartValuePublishDate" class="form-label">Publish Date after:</label>
-                <InputDate id="inputStartValuePublishDate" class="form-control" @bind-Value="publishDateAfter"></InputDate>
+            <div class="filter-item">
+                <label for="inputStartValuePublishDate">Publish Date after:</label>
+                <InputDate id="inputStartValuePublishDate" @bind-Value="publishDateAfter" />
             </div>
-            <div class="col-md-6 mb-3">
-                <label for="inputEndValuePublishDate" class="form-label">Publish Date before:</label>
-                <InputDate id="inputEndValuePublishDate" class="form-control" @bind-Value="publishDateBefore"></InputDate>
+            <div class="filter-item">
+                <label for="inputEndValuePublishDate">Publish Date before:</label>
+                <InputDate id="inputEndValuePublishDate" @bind-Value="publishDateBefore" />
             </div>
-            <div class="col-md-6 mb-3">
-                <label for="category" class="form-label">Category</label>
-                <InputSelect id="category" @bind-Value="inputCategory" class="form-control">
+            <div class="filter-item">
+                <label for="category">Category</label>
+                <InputSelect id="category" @bind-Value="inputCategory">
                     <option value="0">Select Category</option>
                     @foreach (var category in Enum.GetValues(typeof(Category)))
                     {
@@ -39,9 +39,9 @@
                     }
                 </InputSelect>
             </div>
-            <div class="col-md-6 mb-3">
-                <label for="BookColors" class="form-label">Book color</label>
-                <InputSelect id="BookColors" @bind-Value="inputBookColor" class="form-control">
+            <div class="filter-item">
+                <label for="BookColors">Book color</label>
+                <InputSelect id="BookColors" @bind-Value="inputBookColor">
                     <option value="0">Select Book Color</option>
                     @foreach (var bookColor in Enum.GetValues(typeof(BookColors)))
                     {
@@ -49,63 +49,55 @@
                     }
                 </InputSelect>
             </div>
-
             <!-- Authors Filters Section -->
             @if (authors != null)
             {
-
-                        <div class="col-md-6 mb-3">
-                            <label for="author" class="form-label">Authors</label>
-                            <InputSelect id="author" @bind-Value="inputAuthorId" class="form-control">
-                                <option value="">Select Author</option>
-                                @foreach (var author in authors)
-                                {
-                                    <option value="@author.Id">@author.FirstName @author.Surname</option>
-                                }
-                            </InputSelect>
-                        </div>
+                <div class="filter-item">
+                    <label for="author">Authors</label>
+                    <InputSelect id="author" @bind-Value="inputAuthorId">
+                        <option value="">Select Author</option>
+                        @foreach (var author in authors)
+                        {
+                            <option value="@author.Id">@author.FirstName @author.Surname</option>
+                        }
+                    </InputSelect>
+                </div>
             }
             <!-- Publishers Filters Section -->
             @if (publishers != null)
             {
-
-                        <div class="col-md-6 mb-3">
-                            <label for="publisher" class="form-label">Publishers</label>
-                            <InputSelect id="publisher" @bind-Value="inputPublisherId" class="form-control">
-                                <option value="">Select Publisher</option>
-                                @foreach (var publisher in publishers)
-                                {
-                                    <option value="@publisher.Id">@publisher.Name</option>
-                                }
-                            </InputSelect>
-                        </div>
-
+                <div class="filter-item">
+                    <label for="publisher">Publishers</label>
+                    <InputSelect id="publisher" @bind-Value="inputPublisherId">
+                        <option value="">Select Publisher</option>
+                        @foreach (var publisher in publishers)
+                        {
+                            <option value="@publisher.Id">@publisher.Name</option>
+                        }
+                    </InputSelect>
+                </div>
             }
             <!-- Genres Filters Section -->
             @if (genres != null)
             {
-
-                        <div class="col-md-6 mb-3">
-                            <label for="genre" class="form-label">Genres</label>
-                            <InputSelect id="genre" @bind-Value="inputGenreId" class="form-control">
-                                <option value="">Select Genre</option>
-                                @foreach (var genre in genres)
-                                {
-                                    <option value="@genre.Id">@genre.Name</option>
-                                }
-                            </InputSelect>
-                        </div>
-
+                <div class="filter-item">
+                    <label for="genre">Genres</label>
+                    <InputSelect id="genre" @bind-Value="inputGenreId">
+                        <option value="">Select Genre</option>
+                        @foreach (var genre in genres)
+                        {
+                            <option value="@genre.Id">@genre.Name</option>
+                        }
+                    </InputSelect>
+                </div>
             }
         </div>
-      
     </div>
 
-   
     <!-- Buttons Section -->
-    <div class="d-flex justify-content-center mb-2">
-        <button type="button" class="btn btn-success me-2" @onclick="FilterBooks">Filter</button>
-        <button type="button" class="btn btn-secondary" @onclick="ClearFilters">Clear Filters</button>
+    <div class="filter-buttons">
+        <button type="button" class="filter-button success" @onclick="FilterBooks">Filter</button>
+        <button type="button" class="filter-button secondary" @onclick="ClearFilters">Clear Filters</button>
     </div>
 
     <!-- Filter Results Section -->
@@ -113,14 +105,14 @@
     {
         @if (filteredBooks is null)
         {
-            <div class="alert alert-info">Loading books, please wait...</div>
+            <div class="alert info">Loading books, please wait...</div>
         }
         else if (filteredBooks.Any())
         {
-            <div class="row">
+            <div class="results-row">
                 @foreach (var book in filteredBooks)
                 {
-                    <div class="col-md-4 mb-4">
+                    <div class="result-item">
                         <BookCard Book="book" />
                     </div>
                 }
@@ -128,14 +120,16 @@
         }
         else
         {
-            <div class="alert alert-warning">No books found.</div>
+            <div class="alert warning">No books found.</div>
         }
     }
     else
     {
-        <div class="alert alert-warning">Select filters and press submit to see books.</div>
+        <div class="alert warning">Select filters and press submit to see books.</div>
     }
 </div>
+
+
 
 
 @code {

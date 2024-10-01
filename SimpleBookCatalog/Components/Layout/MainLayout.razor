@@ -1,7 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="layout-container">
-    <aside class="sidebar ">
+    <aside class="sidebar">
         <!-- Main Page link solo at the top -->
         <section class="sidebar-section">
             <h2 class="sidebar-title">
@@ -11,21 +11,23 @@
 
         <!-- Contents section -->
         <section class="sidebar-section">
-            <h3 class="sidebar-subtitle">Contents</h3>
             <ul class="sidebar-list">
                 <li><a href="/show-authors">Authors</a></li>
                 <li><a href="/show-publishers">Publishers</a></li>
                 <li><a href="/show-genres">Genres</a></li>
                 <li><a href="/show-books">Books</a></li>
                 <li><a href="/filter-books-authors">Filter books</a></li>
+                
             </ul>
         </section>
 
-        <!-- Genres section -->
+
         <section class="sidebar-section">
-            <h3 class="sidebar-subtitle">Charts</h3>
             <ul class="sidebar-list">
-                <li><a href="/charts">Genre Chart</a></li>
+                <li><a href="/book-chart">Books Chart</a></li>
+                
+                <li><a href="/genre-chart">Genre Chart</a></li>
+
             </ul>
         </section>
     </aside>
@@ -42,87 +44,3 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
-
-
-<style>
- /* General Layout Styles */
-.layout-container {
-    display: flex;
-    height: 100vh;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* Sidebar Styles */
-.sidebar {
-    width: 250px;
-    padding: 1.5rem;
-    background-image: linear-gradient(180deg, #8d8d8d 0%, #4a4a4a 100%); /* Grey gradient for a modern look */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-    color: #ecf0f1; /* Light text color for readability */
-    overflow-y: auto;
-}
-
-.sidebar-title {
-    font-size: 1.75rem;
-    margin-bottom: 1.5rem;
-    color: #f39c12; /* Accent color for the Main Page link */
-}
-
-.sidebar-subtitle {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-    color: #bdc3c7; /* Lighter color for subsection titles */
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.sidebar-list {
-    list-style-type: none;
-    padding-left: 0;
-}
-
-.sidebar-list li {
-    margin-bottom: 0.75rem;
-}
-
-.sidebar-list li a {
-    text-decoration: none;
-    color: #ecf0f1; /* Light color for links */
-    font-size: 1rem;
-    transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transitions */
-    padding: 0.5rem 1rem; /* Padding for better click area */
-    border-radius: 4px; /* Rounded corners for links */
-}
-
-.sidebar-list li a:hover {
-    color: #2ecc71; /* Highlight color on hover */
-    background-color: #34495e; /* Slightly darker background on hover for better visibility */
-}
-
-/* Main Content Styles */
-.main-content {
-    flex-grow: 1;
-    padding: 2rem;
-    background-image: linear-gradient(180deg, #f0f3f4 0%, #dfe6e9 100%); /* Soft gradient with cool tones */
-    overflow-y: auto;
-}
-
-/* Responsive Design */
-    media (max-width: 992px) {
-    .layout-container {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-        margin-bottom: 1rem;
-        box-shadow: none;
-    }
-
-    .main-content {
-        padding: 1rem;
-    }
-}
-
-
-</style>

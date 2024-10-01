@@ -116,6 +116,22 @@ public class MockBookData
             }
         };
         }
+
+
+        // Helper method to link books back to authors and publishers
+        public static List<Book> LinkBooksToAuthorsAndPublishers(List<Book> books, List<Author> authors, List<Publisher> publishers)
+        {
+            foreach (var book in books)
+            {
+                // Add the book to the corresponding author
+                book.Author.Books.Add(book);
+
+                // Add the book to the corresponding publisher
+                book.Publisher.Books.Add(book);
+            }
+
+            return books;
+        }
     }
 
 }

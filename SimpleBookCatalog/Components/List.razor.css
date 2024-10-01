@@ -6,9 +6,8 @@
 
 h1 {
     text-align: center; /* Center align the title */
-    margin: 20px 0; /* Minimized margin to reduce space above */
     font-size: 2em; /* Increased font size for prominence */
-    color: #8b5a2b; /* Color matching the bookcase theme */
+    color: #343a40; /* Color matching the bookcase theme */
 }
 
 .book-grid {
@@ -20,7 +19,7 @@ h1 {
 }
 
 .book {
-    background-color: #e0c097; /* Book cover-like color (light brown) */
+    background-color: #343a40; /* Book cover-like color (light brown) */
     border: 1px solid #a68b5a; /* Darker border for definition */
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -58,56 +57,68 @@ h1 {
 /* Additional styles for creating a shelf effect */
 .shelf {
     height: 20px; /* Shelf height */
-    background-color: #8b5a2b; /* Darker wood color */
+    background-color: #343a40; /* Darker wood color */
     border-radius: 5px;
-    margin: 10px 0; /* Space between shelves */
     position: relative;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
 }
 .book-details {
-    padding: 20px; /* Increased padding for aesthetics */
-    border: 1px solid #ccc; /* Light border to define the area */
-    border-radius: 8px; /* Rounded corners for the details box */
-    background-color: #ffffff; /* White background for clarity */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Soft shadow for depth */
-    margin-top: 10px; /* Space above the details section */
+    padding: 25px; /* Increased padding for spaciousness */
+    border: 1px solid #d4a373; /* Warm-toned border resembling old paper edges */
+    border-radius: 12px; /* Slightly larger rounded corners */
+    background-color: #f9f5e3; /* Light parchment background */
+    background-image: url('path-to-paper-texture.png'); /* Optional: Use a subtle paper texture image */
+    background-size: cover; /* Make sure texture covers the area */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow for depth */
+    font-family: 'Cormorant Garamond', serif; /* Book-style serif font */
+    margin-top: 15px; /* Space above the details section */
 }
 
 .book-details-title {
     margin: 0; /* No margin for title */
-    font-size: 1.6em; /* Larger font size for prominence */
-    color: #8b5a2b; /* Color matching the book theme */
-    text-align: center; /* Centered title for better visibility */
+    font-size: 2em; /* Larger font size for prominence */
+    color: #8b4513; /* Rich brown color like ink on old paper */
+    text-align: center; /* Centered title */
     border-bottom: 2px solid #b58f63; /* Underline for emphasis */
-    padding-bottom: 10px; /* Padding below title */
+    padding-bottom: 15px; /* Padding below title */
+    letter-spacing: 1px; /* Slightly spaced out letters for elegance */
+    font-weight: 600; /* Semi-bold for title */
 }
 
 .details-container {
-    margin-top: 15px; /* Space above the details container */
+    
+    border: 1px solid #d4a373; /* Add a soft border around container */
+    padding: 15px; /* Add padding to the container */
+    background-color: rgba(255, 255, 255, 0.8); /* Light background with some transparency */
+    border-radius: 8px; /* Rounded corners */
 }
 
 .detail-item {
     display: flex; /* Flexbox for alignment */
     justify-content: space-between; /* Space between label and value */
-    padding: 8px 0; /* Vertical padding for spacing */
-    border-bottom: 1px solid #e0e0e0; /* Separator line between items */
-    transition: background-color 0.2s; /* Transition effect for hover */
+    padding: 10px 0; /* More vertical padding for spacing */
+    border-bottom: 1px solid #d4c4a3; /* Subtle line between items */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
 }
 
     .detail-item:hover {
-        background-color: #f9f9f9; /* Light background on hover */
+        background-color: #f4ebd9; /* Slightly darker parchment on hover */
+        transform: translateX(5px); /* Slight shift effect for interactivity */
     }
 
 .detail-label {
     font-weight: bold; /* Bold label for emphasis */
-    color: #8b5a2b; /* Match the theme color */
-    width: 30%; /* Fixed width for labels */
-    font-size: 1.1em; /* Increased font size for labels */
+    color: #8b4513; /* Same ink-like brown color */
+    width: 40%; /* Wider width for labels */
+    font-size: 1.2em; /* Increased font size for labels */
+    text-transform: uppercase; /* Uppercase for labels for elegance */
+    letter-spacing: 0.5px; /* Small letter spacing */
 }
 
 .detail-value {
-    color: #333; /* Dark color for readability */
-    width: 70%; /* Fixed width for values */
-    font-size: 1.1em; /* Increased font size for values */
+    color: #4b2e1a; /* Dark brown for readability */
+    width: 60%; /* Adjust width for values */
+    font-size: 1.2em; /* Slightly larger font size */
     text-align: right; /* Right-align values */
+    font-style: italic; /* Italic for values, to give a handwritten feel */
 }
