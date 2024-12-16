@@ -24,3 +24,7 @@ This app allows users to view, add, edit, and manage book entries. It demonstrat
 - **Custom Generic Sorting Object**: A flexible, reusable sorting mechanism for every entity-related form. This eliminates the need to manually write sorting logic for each form, reducing code duplication and simplifying maintenance.
 
 - **Dynamic Form Generation**: A powerful custom generic object dynamically generates forms based on entity attributes. Instead of manually defining each form field, this object reads the entity's properties and creates the necessary form components. This approach significantly reduces the amount of code required to manage forms, making it easier to scale and maintain.
+
+- **Login Logout**: Login logout feature as Admin or as User using Identity. With Authorize view is determined the feed that will be provided to the visitor. For acces as admin or user login with the following credentials.
+- Username: admin Pass: admin123.
+- User Username: user Pass: user123.
