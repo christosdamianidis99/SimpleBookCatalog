@@ -10,10 +10,6 @@
 
 @{
    <EditForm Enhance="true" method="post" autocomplete="off" Model="@Model" OnValidSubmit="@HandleFormSubmit">
-
-      
-      
-            
     <DataAnnotationsValidator/>
 
     @foreach (var property in typeof(TModel).GetProperties())

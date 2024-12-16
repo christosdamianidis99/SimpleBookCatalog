@@ -7,12 +7,15 @@
 @inject SimpleBookCatalogDbContext DbContext
 @inject IGenreRepository GenrerRepository
 @inject IAuthorRepository AuthorRepository
+@rendermode InteractiveServer
 
-<h1>Genre Chart</h1>
-<Chart Config="GenreConfig"></Chart>
+<div>
+    <Chart Config="GenreConfig"></Chart>
+</div>
 
+<div>
 <Chart Config="AuthorConfig" @ref="_chart"></Chart>
-
+</div>
 @code {
     private PieConfig GenreConfig = new(true)
     {       

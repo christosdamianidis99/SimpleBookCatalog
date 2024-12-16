@@ -43,6 +43,23 @@ public class SimpleBookCatalogDbContext : DbContext
         .Property(b => b.Price)
         .HasPrecision(18, 2);
 
+
+        modelBuilder.Entity<UserAccount>().HasData(
+           new UserAccount
+           {
+               Id = 1,
+               UserName = "admin",
+               Password = "admin123",
+               Role = "Administrator"
+           },
+           new UserAccount
+           {
+               Id = 2,
+               UserName = "user",
+               Password = "user123",
+               Role = "User"
+           }
+       );
     }
 
     public DbSet<Book> Books { get; set; }
@@ -50,5 +67,7 @@ public class SimpleBookCatalogDbContext : DbContext
     public DbSet<Publisher> Publishers { get; set; }
 
     public DbSet<Genre> Genres { get; set; }
+
+    public DbSet<UserAccount> UserAccounts { get; set; }
 
 }

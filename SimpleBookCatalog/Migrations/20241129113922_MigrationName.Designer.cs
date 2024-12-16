@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace SimpleBookCatalog.Migrations
 {
     [DbContext(typeof(SimpleBookCatalogDbContext))]
-    partial class SimpleBookCatalogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241129113922_MigrationName")]
+    partial class MigrationName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -222,22 +225,6 @@ namespace SimpleBookCatalog.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserAccounts");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Password = "admin123",
-                            Role = "Administrator",
-                            UserName = "admin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Password = "user123",
-                            Role = "User",
-                            UserName = "user"
-                        });
                 });
 
             modelBuilder.Entity("SimpleBookCatalog.Domain.Entities.Book", b =>

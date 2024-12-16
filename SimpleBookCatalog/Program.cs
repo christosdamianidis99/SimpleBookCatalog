@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using SimpleBookCatalog;
 using SimpleBookCatalog.Application.Interfaces;
@@ -10,6 +11,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+{
+    options.Cookie.Name = "auth_token";
+    options.LoginPath = "/login";
+    options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
+    options.AccessDeniedPath = "/access-denied";
+}
+
+);
 
 builder.Services.AddDbContextFactory<SimpleBookCatalogDbContext>(options =>
 {
@@ -18,11 +28,17 @@ builder.Services.AddDbContextFactory<SimpleBookCatalogDbContext>(options =>
         opts.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
     });
 });
+builder.Services.AddAuthorization();
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddServerSideBlazor();
 
 
+builder.Services.AddAntiforgery(options =>
+{     // Set Cookie properties using CookieBuilder properties†.
 
+    options.Cookie.Expiration = TimeSpan.Zero;
 
-
+});
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
@@ -40,11 +56,13 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseStaticFiles();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseAntiforgery();
+app.UseStaticFiles();
 
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+app.MapRazorComponents<App>().DisableAntiforgery().AddInteractiveServerRenderMode();
+
 
 app.Run();
 

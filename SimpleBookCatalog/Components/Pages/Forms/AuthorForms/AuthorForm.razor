@@ -2,11 +2,13 @@
 @inject IBookRepository repositoryBooks
 @inject NavigationManager Navigation
 @using SimpleBookCatalog.Components.ReusableComponents
+@rendermode InteractiveServer
 
 @if (Author is not null)
 {
 
 <EditForm Enhance="true" FormName="AddOrEditAuthorForm" Model="Author">
+
         <EditFormGeneric 
             TModel="Author" 
             Model="Author" 

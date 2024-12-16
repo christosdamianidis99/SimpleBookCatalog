@@ -2,6 +2,7 @@
 
 <div class="layout-container">
     <aside class="sidebar">
+
         <!-- Main Page link solo at the top -->
         <section class="sidebar-section">
             <h2 class="sidebar-title">
@@ -9,27 +10,32 @@
             </h2>
         </section>
 
-        <!-- Contents section -->
-        <section class="sidebar-section">
-            <ul class="sidebar-list">
-                <li><a href="/show-authors">Authors</a></li>
-                <li><a href="/show-publishers">Publishers</a></li>
-                <li><a href="/show-genres">Genres</a></li>
-                <li><a href="/show-books">Books</a></li>
-                <li><a href="/filter-books-authors">Filter books</a></li>
-                
-            </ul>
-        </section>
+        <!-- Role-based Navigation -->
+        <AuthorizeView Roles="Administrator,User">
+            <Authorized>
+                <section class="sidebar-section">
+                    <ul class="sidebar-list">
+                        <li><a href="/show-authors">Authors</a></li>
+                        <li><a href="/show-publishers">Publishers</a></li>
+                        <li><a href="/show-genres">Genres</a></li>
+                        <li><a href="/show-books">Books</a></li>
+                        <li><a href="/filter-books-authors">Filter books</a></li>
+                    </ul>
+                </section>
+            </Authorized>
+        </AuthorizeView>
 
+        <AuthorizeView Roles="Administrator">
+            <Authorized>
+                <section class="sidebar-section">
+                    <ul class="sidebar-list">
+                        <li><a href="/book-chart">Books Chart</a></li>
+                        <li><a href="/genre-chart">Genre Chart</a></li>
+                    </ul>
+                </section>
+            </Authorized>
+        </AuthorizeView>
 
-        <section class="sidebar-section">
-            <ul class="sidebar-list">
-                <li><a href="/book-chart">Books Chart</a></li>
-                
-                <li><a href="/genre-chart">Genre Chart</a></li>
-
-            </ul>
-        </section>
     </aside>
 
     <main class="main-content">
@@ -37,6 +43,23 @@
             @Body
         </article>
     </main>
+
+    <!-- Authorization Section (Bottom Left) -->
+    <AuthorizeView>
+        <Authorized>
+            <!-- Logged-in Section -->
+            <div class="auth-status-logout bg-white text-dark p-2 rounded shadow-sm">
+                <span>Welcome, you are logged in as <b>@context.User.Identity.Name</b>!</span>
+                <a class="btn btn-danger btn-sm fw-bold mt-2 d-block text-center" href="/logout">Logout</a>
+            </div>
+        </Authorized>
+        <NotAuthorized>
+            <!-- Logged-out Section -->
+            <div class="auth-status-login bg-light text-dark p-2 rounded shadow-sm">
+                <a class="btn btn-primary btn-sm fw-bold d-block text-center" href="/login">Login</a>
+            </div>
+        </NotAuthorized>
+    </AuthorizeView>
 </div>
 
 <div id="blazor-error-ui">
@@ -44,3 +67,22 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+<style>
+   
+    .auth-status-logout {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        width: 300px;
+        z-index: 1000;
+    }
+
+    .auth-status-login {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        width: 120px;
+        z-index: 1000;
+    }
+</style>

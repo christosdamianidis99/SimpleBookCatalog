@@ -6,6 +6,56 @@
     background-color: #f8f9fa; /* Light background for a modern look */
 }
 
+
+/* Main Content Styles */
+.main-content {
+    display: flex; /* Use flexbox for layout */
+    flex: 1; /* Take the remaining space */
+    padding: 0; /* No padding to maximize width */
+    background-color: #ffffff; /* White background for contrast */
+    overflow-y: auto; /* Enable vertical scroll if content overflows */
+    width: 100%; /* Full width of the container */
+}
+
+/* Content Article Styles */
+.content {
+    margin: 0; /* No margin to fit exactly */
+    padding: 20px; /* Padding for readability */
+    width: 100%; /* Full width for the content */
+    font-family: 'Georgia', serif; /* Classic font for readability */
+    box-sizing: border-box; /* Ensure padding is included in the width */
+}
+
+/* Blazor Error UI Styles */
+#blazor-error-ui {
+    position: fixed; /* Fixed position for the error UI */
+    top: 20px; /* Space from the top */
+    right: 20px; /* Space from the right */
+    background-color: #dc3545; /* Danger red background */
+    color: white; /* White text */
+    padding: 10px; /* Reduced padding for the error box */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+    display: none; /* Hide by default */
+}
+
+    /* Show error UI when there's an error */
+    #blazor-error-ui.show {
+        display: block; /* Show when there's an error */
+    }
+
+    #blazor-error-ui a {
+        color: #ffffff; /* White text for links */
+        text-decoration: underline; /* Underlined for emphasis */
+        margin-left: 10px; /* Space between links */
+    }
+
+        #blazor-error-ui a:hover {
+            color: #ffc107; /* Gold color on hover */
+        }
+
+
+
 /* Sidebar Styles */
 .sidebar {
     background-color: #343a40; /* Dark background for contrast */
@@ -58,54 +108,6 @@
             background-color: #ffc107; /* Gold background on hover for visibility */
             color: #343a40; /* Dark text color on hover */
         }
-
-/* Main Content Styles */
-.main-content {
-    display: flex; /* Use flexbox for layout */
-    flex: 1; /* Take the remaining space */
-    padding: 0; /* No padding to maximize width */
-    background-color: #ffffff; /* White background for contrast */
-    overflow-y: auto; /* Enable vertical scroll if content overflows */
-    width: 100%; /* Full width of the container */
-}
-
-/* Content Article Styles */
-.content {
-    margin: 0; /* No margin to fit exactly */
-    padding: 20px; /* Padding for readability */
-    width: 100%; /* Full width for the content */
-    font-family: 'Georgia', serif; /* Classic font for readability */
-    box-sizing: border-box; /* Ensure padding is included in the width */
-}
-
-/* Blazor Error UI Styles */
-#blazor-error-ui {
-    position: fixed; /* Fixed position for the error UI */
-    top: 20px; /* Space from the top */
-    right: 20px; /* Space from the right */
-    background-color: #dc3545; /* Danger red background */
-    color: white; /* White text */
-    padding: 10px; /* Reduced padding for the error box */
-    border-radius: 8px; /* Rounded corners */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Shadow for depth */
-    display: none; /* Hide by default */
-}
-
-    /* Show error UI when there's an error */
-    #blazor-error-ui.show {
-        display: block; /* Show when there's an error */
-    }
-
-    #blazor-error-ui a {
-        color: #ffffff; /* White text for links */
-        text-decoration: underline; /* Underlined for emphasis */
-        margin-left: 10px; /* Space between links */
-    }
-
-        #blazor-error-ui a:hover {
-            color: #ffc107; /* Gold color on hover */
-        }
-
 /* Responsive Styles */
 @media (max-width: 768px) {
     .layout-container {
