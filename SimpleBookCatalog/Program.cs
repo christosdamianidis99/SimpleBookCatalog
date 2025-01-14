@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SimpleBookCatalog;
 using SimpleBookCatalog.Application.Interfaces;
 using SimpleBookCatalog.Components;
 using SimpleBookCatalog.Infrastructure.Repositories;
+using SimpleBookCatalog.Services;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,8 +30,10 @@ builder.Services.AddDbContextFactory<SimpleBookCatalogDbContext>(options =>
         opts.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
     });
 });
+
+builder.Services.AddAuthorizationCore();
 builder.Services.AddAuthorization();
-builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddAuthorization();
 builder.Services.AddServerSideBlazor();
 
 
@@ -43,6 +47,8 @@ builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+
+
 
 var app = builder.Build();
 

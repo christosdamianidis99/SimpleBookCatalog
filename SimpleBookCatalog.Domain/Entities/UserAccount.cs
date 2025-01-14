@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SimpleBookCatalog.Domain.Entities
 {
@@ -17,14 +13,22 @@ namespace SimpleBookCatalog.Domain.Entities
 
         [Column("user_name")]
         [MaxLength(100)]
-        public string? UserName { get; set; }
+        [Required]
+        public string UserName { get; set; } = string.Empty;
+
+        [Column("email")]
+        [MaxLength(150)]
+        [Required]
+        public string Email { get; set; } = string.Empty;
 
         [Column("password")]
-        [MaxLength(100)]    
-        public string? Password { get; set; }
+        [MaxLength(100)]
+        [Required]
+        public string Password { get; set; } = string.Empty;
 
         [Column("role")]
         [MaxLength(20)]
-        public string? Role { get; set; }
+        [Required]
+        public string Role { get; set; } = "User";
     }
 }
