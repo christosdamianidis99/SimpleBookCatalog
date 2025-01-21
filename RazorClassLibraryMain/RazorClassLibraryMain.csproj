@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+	  <TargetFramework>net8.0</TargetFramework>
+	  <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="wwwroot\**\*" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+
+	
+	<ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="ChartJs.Blazor.Fork" Version="2.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.3.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+    <ProjectReference Include="..\SimpleBookCatalog.Application\SimpleBookCatalog.Application.csproj" />
+    <ProjectReference Include="..\SimpleBookCatalog.Domain\SimpleBookCatalog.Domain.csproj" />
+    <ProjectReference Include="..\SimpleBookCatalog.Infrastructure\SimpleBookCatalog.Infrastructure.csproj" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+</Project>

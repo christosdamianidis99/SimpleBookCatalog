@@ -1,18 +1,20 @@
 ﻿@page "/add-new-author"
-@using SimpleBookCatalog.Components.Pages.Forms.AuthorForms
+@using RazorClassLibraryMain.EntityForms.AuthorForms
 @inject IAuthorRepository RepositoryAuthors
 @inject NavigationManager Navigation
 
 <PageTitle>Add New Author</PageTitle>
 
 <div class="row justify-content-center">
-<div class="col-6">
-    <AuthorForm IsEditMode="false" OnValidAuthorSubmit="AddAuthor"/>
-    
-</div>
+    <div class="col-6">
+        <AuthorForm IsEditMode="false" OnValidAuthorSubmit="AddAuthor"/>
+
+    </div>
 </div>
 
 @code {
+    private HttpContext a { get; set; }
+
     private async Task AddAuthor(Author author)
     {
         await RepositoryAuthors.AddAsync(author);

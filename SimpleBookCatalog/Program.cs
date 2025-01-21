@@ -1,28 +1,21 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SimpleBookCatalog.Application.Interfaces;
 using SimpleBookCatalog.Components;
 using SimpleBookCatalog.Infrastructure.Repositories;
-using SimpleBookCatalog.Services;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the container
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
-{
-    options.Cookie.Name = "auth_token";
-    options.LoginPath = "/login";
-    options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
-    options.AccessDeniedPath = "/access-denied";
-}
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
 
-);
-
+// Configure EF Core and repositories
 builder.Services.AddDbContextFactory<SimpleBookCatalogDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("SimpleBookCatalogConnection"), opts =>
@@ -31,44 +24,73 @@ builder.Services.AddDbContextFactory<SimpleBookCatalogDbContext>(options =>
     });
 });
 
-builder.Services.AddAuthorizationCore();
-builder.Services.AddAuthorization();
-builder.Services.AddAuthorization();
-builder.Services.AddServerSideBlazor();
-
-
-builder.Services.AddAntiforgery(options =>
-{     // Set Cookie properties using CookieBuilder properties†.
-
-    options.Cookie.Expiration = TimeSpan.Zero;
-
+// Configure authentication and Google login
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+})
+.AddCookie(options =>
+{
+    options.Cookie.Name = "auth_token";
+    options.LoginPath = "/login";
+    options.AccessDeniedPath = "/access-denied";
+    options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
+})
+.AddGoogle(googleOptions =>
+{
+    googleOptions.ClientId = "GOOGLE_OAUTH_CLIENT_ID";
+    googleOptions.ClientSecret = "GOOGLE_OAUTH_CLIENT_SECRET";
 });
+
+// Configure authorization policies
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AuthenticatedUser", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+    });
+});
+
+
+// Configure antiforgery settings
+builder.Services.AddAntiforgery(options =>
+{
+    options.Cookie.Expiration = TimeSpan.Zero;
+});
+
+// Register application services and repositories
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 
-
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthentication();
-app.UseAuthorization();
-app.UseAntiforgery();
 app.UseStaticFiles();
 
-app.MapRazorComponents<App>().DisableAntiforgery().AddInteractiveServerRenderMode();
+app.UseAuthentication(); // Must come before UseAuthorization
+app.UseAuthorization();
 
+app.MapControllers();
+
+//This is one for some reason deactivate the rendermode
+//app.MapBlazorHub();
+
+app.MapRazorPages();
+
+app.MapRazorComponents<App>()
+    .AddAdditionalAssemblies(new[] { typeof(RazorClassLibraryMain.Account.Login).Assembly })
+    .DisableAntiforgery() // Use cautiously; consider enabling antiforgery if needed
+    .AddInteractiveServerRenderMode();
 
 app.Run();
-
