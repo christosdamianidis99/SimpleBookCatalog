@@ -19,15 +19,15 @@
 </div>
 @code {
     [CascadingParameter]
-    public HttpContext HttpContext{ get; set; }
+    public HttpContext HttpContext { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        if(HttpContext.User.Identity.IsAuthenticated)
+        if (HttpContext.User.Identity.IsAuthenticated)
         {
             await HttpContext.SignOutAsync();
-           // navigationManager.NavigateTo("/logout", true);
+            // navigationManager.NavigateTo("/logout", true);
             navigationManager.NavigateTo("/", forceLoad: true);
 
         }

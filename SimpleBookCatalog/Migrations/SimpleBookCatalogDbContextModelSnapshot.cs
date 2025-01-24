@@ -16,7 +16,7 @@ namespace SimpleBookCatalog.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "9.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -36,8 +36,7 @@ namespace SimpleBookCatalog.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<DateTime?>("DateOfBirth")
-                        .IsRequired()
+                    b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FirstName")
@@ -52,7 +51,7 @@ namespace SimpleBookCatalog.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Authors");
+                    b.ToTable("Authors", (string)null);
                 });
 
             modelBuilder.Entity("SimpleBookCatalog.Domain.Entities.Book", b =>
@@ -78,21 +77,17 @@ namespace SimpleBookCatalog.Migrations
                     b.Property<int>("Language")
                         .HasColumnType("int");
 
-                    b.Property<int?>("NumberOfBooksSold")
-                        .IsRequired()
+                    b.Property<int>("NumberOfBooksSold")
                         .HasColumnType("int");
 
-                    b.Property<int?>("NumberOfPages")
-                        .IsRequired()
+                    b.Property<int>("NumberOfPages")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("Price")
-                        .IsRequired()
+                    b.Property<decimal>("Price")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime?>("PublicationDate")
-                        .IsRequired()
+                    b.Property<DateTime>("PublicationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("PublisherId")
@@ -116,7 +111,7 @@ namespace SimpleBookCatalog.Migrations
 
                     b.HasIndex("PublisherId");
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", (string)null);
                 });
 
             modelBuilder.Entity("SimpleBookCatalog.Domain.Entities.Genre", b =>
@@ -134,7 +129,7 @@ namespace SimpleBookCatalog.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genres");
+                    b.ToTable("Genres", (string)null);
 
                     b.HasData(
                         new
@@ -192,7 +187,7 @@ namespace SimpleBookCatalog.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Publishers");
+                    b.ToTable("Publishers", (string)null);
                 });
 
             modelBuilder.Entity("SimpleBookCatalog.Domain.Entities.UserAccount", b =>
@@ -230,7 +225,7 @@ namespace SimpleBookCatalog.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserAccounts");
+                    b.ToTable("UserAccounts", (string)null);
 
                     b.HasData(
                         new

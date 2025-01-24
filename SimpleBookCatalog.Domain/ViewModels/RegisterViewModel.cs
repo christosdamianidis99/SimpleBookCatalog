@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SimpleBookCatalog.Domain.Attributes;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SimpleBookCatalog.Domain.ViewModels
 {
@@ -12,8 +14,10 @@ namespace SimpleBookCatalog.Domain.ViewModels
         [EmailAddress(ErrorMessage = "Invalid email format.")]
         public string Email { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Password is required.")]
-        [MinLength(6, ErrorMessage = "Password must be at least 6 characters long.")]
+        [Column("password")]
+        [MaxLength(100)]
+        [Required]
+        [PasswordComplexityAttribute]
         public string Password { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Confirm Password is required.")]

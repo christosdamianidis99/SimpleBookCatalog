@@ -1,0 +1,62 @@
+﻿@page "/verify"
+@inject SimpleBookCatalogDbContext dbContext
+@inject NavigationManager navigationManager
+
+@code {
+    private string? message;
+    private string messageClass = "text-info"; // Default message class
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Extract the token from the query string
+        var uri = new Uri(navigationManager.Uri);
+        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+
+        if (!query.TryGetValue("token", out var tokenValues) || string.IsNullOrEmpty(tokenValues.ToString()))
+        {
+            message = "Invalid verification token.";
+            messageClass = "text-danger";
+            return;
+        }
+
+        var token = tokenValues.ToString(); // Convert StringValues to string
+
+        // Query the database
+        var user = dbContext.UserAccounts.FirstOrDefault(u => u.VerificationToken == token);
+        if (user == null || user.IsVerified)
+        {
+            message = "Invalid or expired token.";
+            messageClass = "text-danger";
+            return;
+        }
+
+        // Update user as verified
+        user.IsVerified = true;
+        user.VerificationToken = null; // Clear the token after verification
+        await dbContext.SaveChangesAsync();
+
+        message = "Your account has been verified! You can now log in.";
+        messageClass = "text-success";
+    }
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-12 text-center">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h1 class="card-title">Email Verification</h1>
+                    <p class="@messageClass mt-3">@message</p>
+                    @if (messageClass == "text-success")
+                    {
+                        <a href="/login" class="btn btn-primary mt-3">Go to Login</a>
+                    }
+                    else
+                    {
+                        <a href="/" class="btn btn-secondary mt-3">Go to Home</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

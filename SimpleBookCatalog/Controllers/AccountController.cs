@@ -38,6 +38,7 @@ namespace SimpleBookCatalog.Controllers
             // Extract email from Google claims
             var email = authenticateResult.Principal.FindFirstValue(ClaimTypes.Email);
             var name = authenticateResult.Principal.FindFirstValue(ClaimTypes.Name);
+            
 
             if (string.IsNullOrEmpty(email))
             {

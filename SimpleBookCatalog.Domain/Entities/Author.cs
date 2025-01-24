@@ -1,4 +1,5 @@
 ﻿
+using SimpleBookCatalog.Domain.Attributes;
 using SimpleBookCatalog.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 

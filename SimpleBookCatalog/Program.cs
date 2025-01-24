@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using RazorClassLibraryMain.Account;
 using SimpleBookCatalog.Application.Interfaces;
 using SimpleBookCatalog.Components;
 using SimpleBookCatalog.Infrastructure.Repositories;
@@ -14,6 +17,8 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddHttpContextAccessor();
+
 
 // Configure EF Core and repositories
 builder.Services.AddDbContextFactory<SimpleBookCatalogDbContext>(options =>
@@ -40,8 +45,8 @@ builder.Services.AddAuthentication(options =>
 })
 .AddGoogle(googleOptions =>
 {
-    googleOptions.ClientId = "GOOGLE_OAUTH_CLIENT_ID";
-    googleOptions.ClientSecret = "GOOGLE_OAUTH_CLIENT_SECRET";
+    googleOptions.ClientId = "google-id";
+    googleOptions.ClientSecret = "google-secret";
 });
 
 // Configure authorization policies

@@ -1,9 +1,7 @@
 ﻿@using Microsoft.AspNetCore;
-
 @page "/login"
 @inject SimpleBookCatalogDbContext dbContext
 @inject NavigationManager navigationManager
-
 <div class="row">
     <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
         <EditForm Model="@Model" OnValidSubmit="Authenticate" FormName="LoginForm">
@@ -18,22 +16,25 @@
                 <InputText @bind-Value="Model.EmailOrUsername" class="form-control" placeholder="Username" />
                 <ValidationMessage For="()=>Model.EmailOrUsername" />
             </div>
+
             <div class="mb-3">
                 <label>Password</label>
-                <InputText @bind-Value="Model.Password" placeholder="Password" type="password" class="form-control" />
+                <InputText id="passwordInput" @bind-Value="Model.Password" placeholder="Password" type="@passwordInputType" class="form-control" />
                 <ValidationMessage For="()=>Model.Password" />
             </div>
+
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" id="showPasswordCheckbox" onclick="togglePasswordVisibility()">
+                <label class="form-check-label" for="showPasswordCheckbox">Show Password</label>
+            </div>
+
             <div class="mb-3 text-center">
                 <span class="text-danger">@errorMessage</span>
             </div>
             <div class="mb-3 d-grid gap-2">
                 <button type="submit" class="btn btn-primary">Login</button>
             </div>
-            
-
-
         </EditForm>
-
 
         <button class="gsi-material-button" onclick="window.location.href='/Account/GoogleLogin'">
             <div class="gsi-material-button-state"></div>
@@ -51,7 +52,6 @@
                 <span style="display: none;">Sign in with Google</span>
             </div>
         </button>
-
     </div>
 </div>
 
@@ -62,7 +62,14 @@
     [SupplyParameterFromForm]
     public LoginViewModel Model { get; set; } = new();
 
+    private string passwordInputType = "password"; // Default type for password input
     private string? errorMessage;
+
+    private void TogglePasswordVisibility(ChangeEventArgs e)
+    {
+        // Toggle between 'text' and 'password' for the input type
+        passwordInputType = (bool)e.Value ? "text" : "password";
+    }
 
     private async Task Authenticate()
     {
@@ -74,8 +81,11 @@
             errorMessage = "Invalid User Name or Password";
             return;
         }
-
-
+        if (!userAccount.IsVerified)
+        {
+            errorMessage = "Please verify your email before logging in.";
+            return;
+        }
 
         var claims = new List<Claim>
         {
@@ -85,9 +95,7 @@
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
 
-        // Sign in the user
         await httpContext.SignInAsync(principal);
-       
         navigationManager.NavigateTo("/");
     }
 }

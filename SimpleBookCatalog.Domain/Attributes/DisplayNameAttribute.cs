@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SimpleBookCatalog.Domain
+namespace SimpleBookCatalog.Domain.Attributes
 {
-    public class DisplayNameAttribute:Attribute
+    public class DisplayNameAttribute : Attribute
     {
 
         public string Name { get; }

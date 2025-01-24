@@ -10,13 +10,13 @@
 		<Content Include="wwwroot\**\*" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
-	
 	<ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="ChartJs.Blazor.Fork" Version="2.0.2" />
+		<PackageReference Include="MailKit" Version="4.9.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.3.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.0" />
@@ -30,10 +30,6 @@
     <ProjectReference Include="..\SimpleBookCatalog.Domain\SimpleBookCatalog.Domain.csproj" />
     <ProjectReference Include="..\SimpleBookCatalog.Infrastructure\SimpleBookCatalog.Infrastructure.csproj" />
 
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>
