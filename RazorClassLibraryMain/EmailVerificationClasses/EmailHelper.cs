@@ -18,10 +18,9 @@ namespace RazorClassLibraryMain.EmailVerificationClasses
 
             try
             {
-                // Use the fully-qualified class name for MailKit's SmtpClient
                 using var smtp = new MailKit.Net.Smtp.SmtpClient();
                 await smtp.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls); // Connect with TLS
-                await smtp.AuthenticateAsync("Your-email", "your-password-or-password-generated-from-2fa"); // Authenticate with credentials
+                await smtp.AuthenticateAsync("your email", "your email password"); // Authenticate with credentials
                 await smtp.SendAsync(email); // Send the email
                 await smtp.DisconnectAsync(true); // Disconnect cleanly
             }

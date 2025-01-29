@@ -74,13 +74,17 @@
     private async Task Authenticate()
     {
         var userAccount = dbContext.UserAccounts
-            .FirstOrDefault(x => x.UserName == Model.EmailOrUsername);
+            .FirstOrDefault(x => x.UserName == Model.EmailOrUsername || x.Email == Model.EmailOrUsername);
 
         if (userAccount is null || userAccount.Password != Model.Password)
         {
+            // Log failed login attempt
+            await LogUserLogin(Model.EmailOrUsername, false);
+
             errorMessage = "Invalid User Name or Password";
             return;
         }
+
         if (!userAccount.IsVerified)
         {
             errorMessage = "Please verify your email before logging in.";
@@ -88,14 +92,45 @@
         }
 
         var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, Model.EmailOrUsername),
-            new Claim(ClaimTypes.Role, userAccount.Role)
-        };
+    {
+        new Claim(ClaimTypes.Name, userAccount.UserName), // Use the actual UserName for consistency
+        new Claim(ClaimTypes.Role, userAccount.Role)
+    };
+
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
 
         await httpContext.SignInAsync(principal);
+
+        // Log successful login attempt
+        await LogUserLogin(userAccount.UserName, true);
+
         navigationManager.NavigateTo("/");
     }
+
+
+
+    private async Task LogUserLogin(string userName, bool isSuccessful)
+    {
+        try
+        {
+            var ipAddress = httpContext?.Connection?.RemoteIpAddress?.ToString() ?? "Unknown";
+           
+            var loginActivity = new LoginActivity
+                {
+                    UserName = userName,
+                    IPAddress = ipAddress,
+                    Date = DateTime.UtcNow,
+                    IsSuccessful = isSuccessful
+                };
+
+            dbContext.LoginActivities.Add(loginActivity);
+            await dbContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to log login activity: {ex.Message}");
+        }
+    }
+
 }

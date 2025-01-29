@@ -1,4 +1,11 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.EntityFrameworkCore;
+
+
+@inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+@inject SimpleBookCatalogDbContext dbContext
+@inject IHttpContextAccessor HttpContextAccessor
 
 <div class="layout-container">
     <aside class="sidebar">
@@ -20,6 +27,9 @@
                         <li><a href="/show-genres">Genres</a></li>
                         <li><a href="/show-books">Books</a></li>
                         <li><a href="/filter-books-authors">Filter books</a></li>
+                        <li><a href="/my-account">My Account</a></li>
+
+
                     </ul>
                 </section>
             </Authorized>
@@ -92,3 +102,42 @@
             width: 100px; /* Ensure consistent button sizes */
         }
 </style>
+@code {
+    private bool userExists = true;
+    private string? userName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userName = authState.User.Identity?.Name;
+
+
+        if (!string.IsNullOrEmpty(userName))
+        {
+            // Check if the user exists in the database
+            userExists = await dbContext.UserAccounts.AnyAsync(u => u.UserName == userName);
+
+            if (!userExists)
+            {
+                // Force logout and redirect to the login page
+                await LogoutUser();
+                RedirectToLogin();
+            }
+        }
+    }
+
+    private async Task LogoutUser()
+    {
+        var httpContext = HttpContextAccessor.HttpContext;
+
+        if (httpContext != null)
+        {
+            await AuthenticationHttpContextExtensions.SignOutAsync(httpContext, CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+    }
+
+    private void RedirectToLogin()
+    {
+        NavigationManager.NavigateTo("/login", true);
+    }
+}

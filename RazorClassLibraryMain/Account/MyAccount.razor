@@ -1,0 +1,322 @@
+﻿@page "/my-account"
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.Extensions.DependencyInjection
+@inject SimpleBookCatalogDbContext dbContext
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject IServiceScopeFactory ScopeFactory
+
+
+@rendermode InteractiveServer
+<h1 class="text-center">My Account</h1>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-0">
+                <div class="card-body">
+                    <!-- Form for Editing User Information -->
+                    <EditForm Model="@userAccount" OnValidSubmit="UpdateAccount" FormName="UserAccountForm" >
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="text-danger" />
+
+                        <!-- Profile Picture Section -->
+                        <div class="mb-4 text-center">
+                            <img src="@profilePicturePreview" alt="Profile Picture" class="rounded-circle img-thumbnail shadow-sm" style="max-height: 150px; width: 150px;" />
+                            @if (string.IsNullOrEmpty(userAccount.ProfilePictureUrl))
+                            {
+                                <!-- If no profile picture exists -->
+                                <div class="mt-3">
+                                    <label for="profilePicture" class="form-label">Upload Profile Picture</label>
+                                    <InputFile OnChange="UploadProfilePicture" id="profilePicture" class="form-control" />
+                                </div>
+                            }
+                            else
+                            {
+                                <!-- If a profile picture exists -->
+                                <div class="mt-3">
+                                    <label for="profilePicture" class="form-label">Change Profile Picture</label>
+                                    <InputFile OnChange="UploadProfilePicture" id="profilePicture" class="form-control mt-2" />
+                                </div>
+                            }
+                        </div>
+
+                        <!-- User Fields -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="firstName" class="form-label fw-semibold">First Name</label>
+                                <InputText @bind-Value="userAccount.FirstName" id="firstName" class="form-control" placeholder="Enter your first name" />
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="lastName" class="form-label fw-semibold">Last Name</label>
+                                <InputText @bind-Value="userAccount.LastName" id="lastName" class="form-control" placeholder="Enter your last name" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label fw-semibold">Email</label>
+                            <InputText @bind-Value="userAccount.Email" id="email" class="form-control" placeholder="Enter your email" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phoneNumber" class="form-label fw-semibold">Phone Number</label>
+                            <InputText @bind-Value="userAccount.PhoneNumber" id="phoneNumber" class="form-control" placeholder="Enter your phone number" />
+                        </div>
+                        <!-- Password Management Section -->
+                        @if (!string.IsNullOrEmpty(userAccount.Password))
+                        {
+                            <div class="mt-5">
+                                <h5 class="fw-bold text-secondary">Change Password</h5>
+                                <div class="mb-3">
+                                    <label for="currentPassword" class="form-label">Current Password</label>
+                                    <InputText @bind-Value="currentPassword" id="currentPassword"
+                                               type="@passwordInputType"
+                                               class="form-control"
+                                               placeholder="Enter your current password"
+                                               @onfocus="EnablePasswordMask" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newPassword" class="form-label">New Password</label>
+                                    <InputText @bind-Value="newPassword" id="newPassword" type="password" class="form-control" placeholder="Enter your new password" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
+                                    <InputText @bind-Value="confirmNewPassword" id="confirmNewPassword" type="password" class="form-control" placeholder="Confirm your new password" />
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-secondary btn-sm" @onclick="UpdatePassword">Update Password</button>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="mt-5">
+                                <h5 class="fw-bold text-secondary">Signed in with Google</h5>
+                                <p class="text-muted">
+                                    You are signed in using your Google account. Password management is not available for this account.
+                                </p>
+                                <button class="btn btn-secondary" @onclick="RevokeGoogleAccess">Revoke Google Access</button>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(userAccount.Password))
+                        {
+                        <div class="mt-5">
+                            <h5 class="fw-bold text-secondary">Recent Login Activity</h5>
+                            @if (recentLogins != null && recentLogins.Any())
+                            {
+                                <ul class="list-group">
+                                    @foreach (var login in recentLogins)
+                                    
+                                    {
+                                        <li class="list-group-item">
+                                            @if (login.IsSuccessful)
+                                            {
+                                                <span class="text-success">✔ Successful</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-danger">✘ Failed</span>
+                                            }
+                                            - Login from @login.IPAddress on @login.Date.ToString("yyyy-MM-dd HH:mm:ss")
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p class="text-muted">No recent login activity found.</p>
+                            }
+                        </div>
+                        }
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Save Changes</button>
+                        </div>
+                    </EditForm>
+
+
+
+
+                    <!-- Success/Error Messages -->
+                    @if (!string.IsNullOrEmpty(successMessage))
+                    {
+                        <div class="alert alert-success mt-3 text-center">@successMessage</div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger mt-3 text-center">@errorMessage</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private UserAccount userAccount = new();
+    private string? successMessage;
+    private string? errorMessage;
+    private string profilePicturePreview = "/images/default-avatar.png"; // Default profile picture
+    private string currentPassword = string.Empty;
+    private string newPassword = string.Empty;
+    private string confirmNewPassword = string.Empty;
+    private List<LoginActivity> recentLogins = new();
+
+    private string passwordInputType = "text";
+
+    private void EnablePasswordMask()
+    {
+        passwordInputType = "password";
+    }
+    private async Task RevokeGoogleAccess()
+    {
+        // Logic for revoking Google access (if implemented)
+        // For example, mark the account as inactive or remove associated tokens
+        userAccount.IsVerified = false; // Example: Set a flag for manual review
+        await dbContext.SaveChangesAsync();
+
+        successMessage = "Google access has been revoked. Please contact support for further assistance.";
+    }
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        using (var scope = ScopeFactory.CreateScope())
+        {
+            var scopedDbContext = scope.ServiceProvider.GetRequiredService<SimpleBookCatalogDbContext>();
+
+            var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+            var userName = authState.User.Identity?.Name;
+
+            if (string.IsNullOrEmpty(userName))
+            {
+                navigationManager.NavigateTo("/login");
+                return;
+            }
+
+            // Fetch user account details
+            userAccount = await scopedDbContext.UserAccounts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.UserName == userName);
+
+            if (userAccount == null)
+            {
+                navigationManager.NavigateTo("/login");
+                return;
+            }
+
+            profilePicturePreview = string.IsNullOrEmpty(userAccount?.ProfilePictureUrl)
+                ? "/images/avatar.png"
+                : userAccount.ProfilePictureUrl;
+
+            // Fetch recent login activity
+            recentLogins = await scopedDbContext.LoginActivities
+                .AsNoTracking()
+                .Where(l => l.UserName == userName)
+                .OrderByDescending(l => l.Date)
+                .Take(5)
+                .ToListAsync();
+        }
+    }
+
+
+    private async Task UpdatePassword()
+    {
+        if (newPassword != confirmNewPassword)
+        {
+            errorMessage = "New passwords do not match.";
+            successMessage = null;
+            return;
+        }
+
+        var user = await dbContext.UserAccounts
+            .FirstOrDefaultAsync(u => u.Id == userAccount.Id);
+
+        if (user == null || user.Password != currentPassword) // Simulated password check
+        {
+            errorMessage = "Current password is incorrect.";
+            successMessage = null;
+            return;
+        }
+
+        user.Password = newPassword;
+        await dbContext.SaveChangesAsync();
+
+        successMessage = "Password updated successfully.";
+        errorMessage = null;
+    }
+    private async Task UpdateAccount()
+    {
+        try
+        {
+            // Ensure the userAccount entity is tracked
+            var trackedUser = await dbContext.UserAccounts
+                .FirstOrDefaultAsync(u => u.Id == userAccount.Id);
+
+            if (trackedUser == null)
+            {
+                errorMessage = "User not found.";
+                return;
+            }
+
+            // Update the tracked user with form values
+            trackedUser.FirstName = userAccount.FirstName;
+            trackedUser.LastName = userAccount.LastName;
+            trackedUser.PhoneNumber = userAccount.PhoneNumber;
+            trackedUser.ProfilePictureUrl = userAccount.ProfilePictureUrl;
+
+            // Save changes to the database
+            await dbContext.SaveChangesAsync();
+
+            successMessage = "Your account has been updated.";
+            errorMessage = null;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Failed to update your account. Please try again.";
+            successMessage = null;
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task UploadProfilePicture(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            var file = e.File;
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/profile-pictures");
+
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            // Generate a unique file name
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.Name)}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            // Save the file
+            await using var fileStream = new FileStream(filePath, FileMode.Create);
+            await file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024).CopyToAsync(fileStream);
+
+            // Set the correct preview URL
+            profilePicturePreview = $"/profile-pictures/{fileName}?{Guid.NewGuid()}"; // Cache-bypass for UI refresh
+            userAccount.ProfilePictureUrl = $"/profile-pictures/{fileName}"; // Save correctly in DB
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Failed to upload the profile picture. Please try again.";
+            successMessage = null;
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+
+
+}

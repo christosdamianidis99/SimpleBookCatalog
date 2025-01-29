@@ -27,7 +27,7 @@ builder.Services.AddDbContextFactory<SimpleBookCatalogDbContext>(options =>
     {
         opts.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
     });
-});
+},ServiceLifetime.Scoped);
 
 // Configure authentication and Google login
 builder.Services.AddAuthentication(options =>
@@ -45,8 +45,8 @@ builder.Services.AddAuthentication(options =>
 })
 .AddGoogle(googleOptions =>
 {
-    googleOptions.ClientId = "google-id";
-    googleOptions.ClientSecret = "google-secret";
+    googleOptions.ClientId = "your client-id";
+    googleOptions.ClientSecret = "your client-secret";
 });
 
 // Configure authorization policies

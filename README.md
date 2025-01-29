@@ -30,3 +30,8 @@ This app allows users to view, add, edit, and manage book entries. It demonstrat
 - **Login Logout**: Login logout feature as Admin or as User using Identity. With Authorize view is determined the feed that will be provided to the visitor. For acces as admin or user login with the following credentials.
 - Username: admin Pass: admin123.
 - User Username: user Pass: user123.
+
+- **Google Sign-In/Registration**: Users can now register or sign in using their Google account for seamless access to the application.
+
+Setup Requirement:
+To enable Google Sign-In functionality, you must generate a Client ID and Client Secret from the Google Cloud Console. Add these credentials to the **Program.cs** file for the feature to work. For security, ensure that these values are stored securely and not exposed in the source code.

@@ -69,5 +69,6 @@ public class SimpleBookCatalogDbContext : DbContext
     public DbSet<Genre> Genres { get; set; }
 
     public DbSet<UserAccount> UserAccounts { get; set; }
+    public DbSet<LoginActivity> LoginActivities { get; set; } 
 
 }

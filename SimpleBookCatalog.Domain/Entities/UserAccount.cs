@@ -42,5 +42,21 @@ namespace SimpleBookCatalog.Domain.Entities
         [Column("verification_token")]
         [MaxLength(250)]
         public string? VerificationToken { get; set; }
+
+        // New fields for My Account
+        [Column("first_name")]
+        [MaxLength(50)]
+        public string? FirstName { get; set; }
+
+        [Column("last_name")]
+        [MaxLength(50)]
+        public string? LastName { get; set; }
+
+        [Column("phone_number")]
+        [MaxLength(15)]
+        public string? PhoneNumber { get; set; }
+
+        [Column("profile_picture_url")]
+        public string? ProfilePictureUrl { get; set; }
     }
 }
